@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P2W INTERPLUS | Job Board</title>
+    <title>P2W INTERPLUS | Creator Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -28,25 +28,24 @@
         :not(.dark) .glass { background:rgba(255,255,255,.82); }
         input:focus { border-color:#C5A880!important; outline:none; }
         .btn-bronze { background:#C5A880; color:#0D0D0C; font-weight:700; letter-spacing:.12em; transition:all .3s; }
-        .btn-bronze:hover { box-shadow:0 0 24px rgba(197,168,128,.5); transform:scale(1.02); }
-        .btn-bronze:disabled { opacity:.5; transform:none; box-shadow:none; cursor:not-allowed; }
-        .fade-up { opacity:0; transform:translateY(20px); transition:opacity .6s ease,transform .6s ease; }
+        .btn-bronze:hover { box-shadow:0 0 24px rgba(197,168,128,.5); }
+        .btn-bronze:disabled { opacity:.5; box-shadow:none; cursor:not-allowed; }
+        .fade-up { opacity:0; transform:translateY(24px); transition:opacity .6s ease,transform .6s ease; }
         .fade-up.in { opacity:1; transform:translateY(0); }
-        /* Status badges */
         .badge-open        { background:rgba(197,168,128,.15); color:#C5A880; border:1px solid rgba(197,168,128,.4); }
         .badge-urgent      { background:rgba(251,191,36,.15);  color:#FBBF24; border:1px solid rgba(251,191,36,.4); }
         .badge-very_urgent { background:rgba(239,68,68,.15);   color:#EF4444; border:1px solid rgba(239,68,68,.4); }
         .badge-taken       { background:rgba(100,116,139,.15); color:#94A3B8; border:1px solid rgba(100,116,139,.4); }
         .badge-completed   { background:rgba(34,197,94,.15);   color:#22C55E; border:1px solid rgba(34,197,94,.4); }
-        /* Job card hover */
+        .badge-cancelled   { background:rgba(239,68,68,.1);    color:#F87171; border:1px solid rgba(239,68,68,.3); }
         .job-card { transition:all .35s; }
         .job-card:hover { border-color:rgba(197,168,128,.45)!important; box-shadow:0 0 28px rgba(197,168,128,.08); }
-        /* Modal */
         @keyframes mIn { from{opacity:0;transform:scale(.97)} to{opacity:1;transform:scale(1)} }
         .modal-box { animation:mIn .2s ease-out; }
-        /* Scroll hide */
-        .sh { scrollbar-width:none; -ms-overflow-style:none; }
-        .sh::-webkit-scrollbar { display:none; }
+        .sh { scrollbar-width:none; } .sh::-webkit-scrollbar { display:none; }
+        /* Step connector */
+        .step-line::after { content:''; position:absolute; top:50%; left:calc(100% + 8px); width:calc(100% - 8px); height:1px; background:linear-gradient(90deg,rgba(197,168,128,.4),rgba(197,168,128,.05)); }
+        @media(max-width:767px){ .step-line::after { display:none; } }
     </style>
 </head>
 <body class="min-h-screen relative">
@@ -54,10 +53,10 @@
 <div class="fixed inset-0 z-0 pointer-events-none">
     <div class="absolute inset-0 dark:bg-[#0D0D0C] bg-[#F9F8F6]"></div>
     <div class="absolute inset-0 grid-bg opacity-60"></div>
-    <div class="absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_0%,rgba(197,168,128,.06),transparent)]"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_0%,rgba(197,168,128,.07),transparent)]"></div>
 </div>
 
-<!-- Header -->
+<!-- ════════════ HEADER ════════════ -->
 <header class="fixed top-0 w-full z-50 dark:bg-[#0D0D0C]/88 bg-[#F9F8F6]/88 backdrop-blur-md border-b dark:border-white/[.07] border-black/[.07]">
     <div class="flex justify-between items-center max-w-[1440px] mx-auto px-5 md:px-10 h-16">
         <a href="/" class="flex items-center gap-2.5">
@@ -67,18 +66,23 @@
                 <div class="font-mono text-[8px] tracking-widest text-bronze/50 uppercase">REVIEW & BROKER</div>
             </div>
         </a>
-        <div class="flex items-center gap-3">
-            <!-- Creator info (show when logged in) -->
+        <div class="flex items-center gap-2.5">
+            <!-- Creator info (logged in) -->
             <div id="creator-info" class="hidden items-center gap-2">
                 <div class="w-7 h-7 rounded-full bg-[rgba(197,168,128,.2)] flex items-center justify-center">
                     <i class="fa-solid fa-user text-bronze text-xs"></i>
                 </div>
-                <span id="creator-name" class="font-mono text-[11px] dark:text-zinc-300 text-zinc-700 hidden sm:block"></span>
+                <span id="creator-name" class="font-mono text-[11px] dark:text-zinc-300 text-zinc-700 hidden sm:block max-w-[120px] truncate"></span>
             </div>
             <button id="theme-toggle" class="w-8 h-8 flex items-center justify-center border dark:border-white/[.08] border-black/[.08] rounded-sm dark:text-zinc-400 text-zinc-600 hover:text-bronze">
                 <i class="fa-solid fa-sun hidden" id="icon-sun"></i>
                 <i class="fa-solid fa-moon" id="icon-moon"></i>
             </button>
+            <!-- Login btn (logged out) -->
+            <button id="header-login-btn" onclick="openLoginModal()" class="btn-bronze px-4 py-2 font-mono text-[10px] rounded-sm flex items-center gap-1.5">
+                <i class="fa-solid fa-right-to-bracket"></i> เข้าสู่ระบบ
+            </button>
+            <!-- Logout btn (logged in) -->
             <button id="logout-btn" class="hidden font-mono text-[10px] tracking-wider dark:text-zinc-500 text-zinc-500 hover:text-red-400 border dark:border-white/[.08] border-black/[.08] rounded-sm px-3 py-1.5">
                 <i class="fa-solid fa-right-from-bracket mr-1"></i>ออก
             </button>
@@ -86,64 +90,197 @@
     </div>
 </header>
 
-<!-- ════════════ LOGIN VIEW ════════════ -->
-<div id="login-view" class="relative z-10 pt-20 min-h-screen flex items-center justify-center px-5">
-    <div class="w-full max-w-sm">
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center gap-2 border border-bronze/40 px-4 py-1.5 mb-5 bg-[rgba(197,168,128,.07)] rounded-sm">
-                <i class="fa-solid fa-lock text-bronze text-[10px]"></i>
-                <span class="font-mono text-[10px] tracking-[.3em] font-bold text-bronze">CREATOR_PORTAL</span>
+<!-- ════════════ PUBLIC LANDING ════════════ -->
+<div id="public-view" class="relative z-10 pt-16">
+
+    <!-- Hero -->
+    <section class="min-h-[92vh] flex items-center justify-center px-5 py-20">
+        <div class="text-center max-w-3xl mx-auto">
+            <div class="fade-up inline-flex items-center gap-2 border border-bronze/40 px-4 py-1.5 mb-6 bg-[rgba(197,168,128,.07)] rounded-sm">
+                <span class="w-1.5 h-1.5 rounded-full bg-bronze animate-pulse"></span>
+                <span class="font-mono text-[10px] tracking-[.3em] font-bold text-bronze">CREATOR PLATFORM</span>
             </div>
-            <h1 class="font-serif text-4xl font-black dark:text-gray-50 text-gray-900 mb-2">เข้าสู่ระบบ</h1>
-            <p class="dark:text-zinc-400 text-zinc-600 text-sm">สำหรับ Creator ที่ได้รับการอนุมัติแล้วเท่านั้น</p>
-        </div>
-        <div class="glass border dark:border-white/[.08] border-black/[.08] rounded-sm p-7">
-            <form id="login-form" class="space-y-4">
-                <div>
-                    <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">อีเมล</label>
-                    <input type="email" id="l-email" required placeholder="your@email.com"
-                        class="w-full dark:bg-white/[.05] bg-black/[.05] border dark:border-white/10 border-black/10 rounded-sm p-3 dark:text-gray-50 text-gray-900 text-sm placeholder:dark:text-zinc-600 placeholder:text-zinc-400">
-                </div>
-                <div>
-                    <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">รหัสผ่าน</label>
-                    <input type="password" id="l-pass" required placeholder="••••••••"
-                        class="w-full dark:bg-white/[.05] bg-black/[.05] border dark:border-white/10 border-black/10 rounded-sm p-3 dark:text-gray-50 text-gray-900 text-sm placeholder:dark:text-zinc-600 placeholder:text-zinc-400">
-                </div>
-                <button type="submit" id="login-btn" class="btn-bronze w-full py-3.5 font-mono text-xs rounded-sm flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-right-to-bracket"></i> เข้าสู่ระบบ
+            <h1 class="fade-up font-serif text-5xl sm:text-6xl md:text-7xl font-black dark:text-gray-50 text-gray-900 mb-6 leading-[1.1]" style="transition-delay:.1s">
+                รับงาน<br>
+                <em class="not-italic text-bronze">Influencer</em><br>
+                กับ P2W
+            </h1>
+            <p class="fade-up dark:text-zinc-400 text-zinc-600 text-base sm:text-lg leading-relaxed mb-10 max-w-xl mx-auto" style="transition-delay:.2s">
+                แพลตฟอร์มเชื่อมต่อ Creator กับแบรนด์และธุรกิจ —
+                ดูงาน, รับงาน, รายได้เข้ากระเป๋า
+            </p>
+            <div class="fade-up flex flex-col sm:flex-row items-center justify-center gap-4" style="transition-delay:.3s">
+                <button onclick="openLoginModal()" class="btn-bronze px-8 py-4 font-mono text-xs rounded-sm flex items-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket"></i> เข้าดูงาน (Login)
                 </button>
-                <div id="login-error" class="hidden text-center py-2.5 border border-red-500/40 bg-red-500/[.07] rounded-sm">
-                    <p id="login-error-msg" class="font-mono text-xs text-red-400 font-bold"></p>
+                <a href="/register.html" class="px-8 py-4 font-mono text-xs border dark:border-white/10 border-black/10 rounded-sm dark:text-zinc-300 text-zinc-700 hover:border-bronze/40 hover:text-bronze transition-all">
+                    สมัครสมาชิก <i class="fa-solid fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+            <!-- Stats -->
+            <div class="fade-up grid grid-cols-3 gap-4 mt-16 max-w-lg mx-auto" style="transition-delay:.4s">
+                <div class="dark:bg-white/[.03] bg-black/[.03] border dark:border-white/[.07] border-black/[.07] rounded-sm p-4">
+                    <div class="font-serif text-2xl font-black text-bronze mb-1">100%</div>
+                    <div class="font-mono text-[9px] tracking-wider dark:text-zinc-500 text-zinc-500 uppercase">งานจริง</div>
                 </div>
-                <p class="text-center font-mono text-[11px] dark:text-zinc-500 text-zinc-500">
-                    ยังไม่มีบัญชี? <a href="/register.html" class="text-bronze hover:underline">สมัครสมาชิก →</a>
-                </p>
-            </form>
+                <div class="dark:bg-white/[.03] bg-black/[.03] border dark:border-white/[.07] border-black/[.07] rounded-sm p-4">
+                    <div class="font-serif text-2xl font-black text-bronze mb-1">Free</div>
+                    <div class="font-mono text-[9px] tracking-wider dark:text-zinc-500 text-zinc-500 uppercase">สมัครฟรี</div>
+                </div>
+                <div class="dark:bg-white/[.03] bg-black/[.03] border dark:border-white/[.07] border-black/[.07] rounded-sm p-4">
+                    <div class="font-serif text-2xl font-black text-bronze mb-1">Fast</div>
+                    <div class="font-mono text-[9px] tracking-wider dark:text-zinc-500 text-zinc-500 uppercase">จ่ายไว</div>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="px-5 py-20 border-t dark:border-white/[.05] border-black/[.05]">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-14">
+                <div class="fade-up font-mono text-[10px] tracking-[.3em] text-bronze mb-3 font-bold">[ HOW IT WORKS ]</div>
+                <h2 class="fade-up font-serif text-4xl font-black dark:text-gray-50 text-gray-900" style="transition-delay:.1s">ขั้นตอนง่ายๆ 3 สเตป</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Step 1 -->
+                <div class="fade-up relative" style="transition-delay:.1s">
+                    <div class="glass border dark:border-white/[.08] border-black/[.08] rounded-sm p-7 h-full">
+                        <div class="w-12 h-12 border border-bronze/40 bg-[rgba(197,168,128,.08)] rounded-sm flex items-center justify-center mb-5">
+                            <span class="font-serif text-xl font-black text-bronze">1</span>
+                        </div>
+                        <h3 class="font-serif text-xl font-black dark:text-gray-50 text-gray-900 mb-2">สมัครสมาชิก</h3>
+                        <p class="dark:text-zinc-400 text-zinc-600 text-sm leading-relaxed">กรอกข้อมูล Creator ของคุณ — แพลตฟอร์ม, จำนวน Follower, หมวดคอนเทนต์ รอทีม P2W ตรวจสอบและอนุมัติ</p>
+                        <a href="/register.html" class="inline-flex items-center gap-1.5 font-mono text-[11px] text-bronze mt-4 hover:underline">
+                            สมัครเลย <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                        </a>
+                    </div>
+                </div>
+                <!-- Step 2 -->
+                <div class="fade-up relative" style="transition-delay:.2s">
+                    <div class="glass border dark:border-white/[.08] border-black/[.08] rounded-sm p-7 h-full">
+                        <div class="w-12 h-12 border border-bronze/40 bg-[rgba(197,168,128,.08)] rounded-sm flex items-center justify-center mb-5">
+                            <span class="font-serif text-xl font-black text-bronze">2</span>
+                        </div>
+                        <h3 class="font-serif text-xl font-black dark:text-gray-50 text-gray-900 mb-2">ดูกระดานงาน</h3>
+                        <p class="dark:text-zinc-400 text-zinc-600 text-sm leading-relaxed">Login เพื่อดูงานที่เปิดรับทั้งหมด — มีงานทั่วไป, ด่วน, และด่วนมาก ดูรายละเอียดและงบประมาณได้เลย</p>
+                        <button onclick="openLoginModal()" class="inline-flex items-center gap-1.5 font-mono text-[11px] text-bronze mt-4 hover:underline">
+                            Login ดูงาน <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- Step 3 -->
+                <div class="fade-up" style="transition-delay:.3s">
+                    <div class="glass border dark:border-white/[.08] border-black/[.08] rounded-sm p-7 h-full">
+                        <div class="w-12 h-12 border border-bronze/40 bg-[rgba(197,168,128,.08)] rounded-sm flex items-center justify-center mb-5">
+                            <span class="font-serif text-xl font-black text-bronze">3</span>
+                        </div>
+                        <h3 class="font-serif text-xl font-black dark:text-gray-50 text-gray-900 mb-2">ติดต่อรับงาน</h3>
+                        <p class="dark:text-zinc-400 text-zinc-600 text-sm leading-relaxed">แจ้งรหัสงานผ่าน Line OA ของ P2W ทีมงานจะติดต่อกลับเพื่อยืนยันรายละเอียดและเริ่มงาน</p>
+                        <a href="https://lin.ee/QJax26d" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 font-mono text-[11px] text-bronze mt-4 hover:underline">
+                            Line OA <i class="fa-brands fa-line text-[11px]"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits -->
+    <section class="px-5 py-20 border-t dark:border-white/[.05] border-black/[.05]">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-14">
+                <div class="fade-up font-mono text-[10px] tracking-[.3em] text-bronze mb-3 font-bold">[ BENEFITS ]</div>
+                <h2 class="fade-up font-serif text-4xl font-black dark:text-gray-50 text-gray-900" style="transition-delay:.1s">ทำไมต้องเลือก P2W</h2>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div class="fade-up flex gap-4 dark:bg-white/[.03] bg-black/[.03] border dark:border-white/[.06] border-black/[.06] rounded-sm p-6" style="transition-delay:.05s">
+                    <div class="w-10 h-10 rounded-sm bg-[rgba(197,168,128,.1)] border border-bronze/20 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-shield-halved text-bronze"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-serif font-black dark:text-gray-50 text-gray-900 mb-1">งานที่ผ่านการตรวจสอบ</h4>
+                        <p class="dark:text-zinc-400 text-zinc-600 text-sm">P2W คัดกรองลูกค้ามาแล้ว ไม่ต้องกังวลเรื่องลูกค้าไม่จ่ายเงิน</p>
+                    </div>
+                </div>
+                <div class="fade-up flex gap-4 dark:bg-white/[.03] bg-black/[.03] border dark:border-white/[.06] border-black/[.06] rounded-sm p-6" style="transition-delay:.1s">
+                    <div class="w-10 h-10 rounded-sm bg-[rgba(197,168,128,.1)] border border-bronze/20 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-coins text-bronze"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-serif font-black dark:text-gray-50 text-gray-900 mb-1">รู้ราคาชัดเจน</h4>
+                        <p class="dark:text-zinc-400 text-zinc-600 text-sm">ทุกงานมีงบประมาณระบุชัด ไม่ต้องต่อราคาเองให้เสียเวลา</p>
+                    </div>
+                </div>
+                <div class="fade-up flex gap-4 dark:bg-white/[.03] bg-black/[.03] border dark:border-white/[.06] border-black/[.06] rounded-sm p-6" style="transition-delay:.15s">
+                    <div class="w-10 h-10 rounded-sm bg-[rgba(197,168,128,.1)] border border-bronze/20 flex items-center justify-center shrink-0">
+                        <i class="fa-brands fa-instagram text-bronze"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-serif font-black dark:text-gray-50 text-gray-900 mb-1">หลายแพลตฟอร์ม</h4>
+                        <p class="dark:text-zinc-400 text-zinc-600 text-sm">Instagram, TikTok, YouTube, Facebook, Lemon8 — มีทุกช่องทาง</p>
+                    </div>
+                </div>
+                <div class="fade-up flex gap-4 dark:bg-white/[.03] bg-black/[.03] border dark:border-white/[.06] border-black/[.06] rounded-sm p-6" style="transition-delay:.2s">
+                    <div class="w-10 h-10 rounded-sm bg-[rgba(197,168,128,.1)] border border-bronze/20 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-bolt text-bronze"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-serif font-black dark:text-gray-50 text-gray-900 mb-1">อัพเดทสม่ำเสมอ</h4>
+                        <p class="dark:text-zinc-400 text-zinc-600 text-sm">P2W อัพเดทงานใหม่ตลอด มีงานด่วนให้รับบ่อยๆ</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="px-5 py-24 border-t dark:border-white/[.05] border-black/[.05]">
+        <div class="max-w-2xl mx-auto text-center">
+            <div class="fade-up glass border dark:border-[rgba(197,168,128,.15)] border-[rgba(139,100,48,.15)] rounded-sm p-12">
+                <h2 class="font-serif text-4xl font-black dark:text-gray-50 text-gray-900 mb-4">พร้อมรับงานแล้ว?</h2>
+                <p class="dark:text-zinc-400 text-zinc-600 mb-8">สมัครสมาชิกฟรี รอ P2W อนุมัติ แล้ว Login มาดูงานได้เลย</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="/register.html" class="btn-bronze px-8 py-4 font-mono text-xs rounded-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-user-plus"></i> สมัครสมาชิกฟรี
+                    </a>
+                    <button onclick="openLoginModal()" class="px-8 py-4 font-mono text-xs border dark:border-white/10 border-black/10 rounded-sm dark:text-zinc-300 text-zinc-700 hover:border-bronze/40 hover:text-bronze transition-all">
+                        <i class="fa-solid fa-right-to-bracket mr-1.5"></i>มีบัญชีแล้ว Login
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="px-5 py-8 border-t dark:border-white/[.07] border-black/[.07]">
+        <div class="max-w-[1440px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="font-mono text-[10px] dark:text-zinc-600 text-zinc-400">© 2026 P2W INTERPLUS. All rights reserved.</div>
+            <div class="flex items-center gap-5">
+                <a href="tel:0887888613" class="font-mono text-[10px] dark:text-zinc-500 text-zinc-500 hover:text-bronze">088-788-8613</a>
+                <a href="https://lin.ee/QJax26d" target="_blank" rel="noopener" class="font-mono text-[10px] dark:text-zinc-500 text-zinc-500 hover:text-bronze flex items-center gap-1"><i class="fa-brands fa-line"></i> Line OA</a>
+                <a href="/" class="font-mono text-[10px] dark:text-zinc-500 text-zinc-500 hover:text-bronze">หน้าหลัก</a>
+            </div>
+        </div>
+    </footer>
 </div>
 
-<!-- ════════════ JOB BOARD VIEW ════════════ -->
-<div id="board-view" class="hidden relative z-10 pt-20 pb-10">
-
-    <!-- Board header -->
+<!-- ════════════ JOB BOARD ════════════ -->
+<div id="board-view" class="hidden relative z-10 pt-16 pb-10">
     <div class="max-w-[1440px] mx-auto px-5 md:px-10 pt-10 pb-6 border-b dark:border-white/[.05] border-black/[.05]">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
             <div>
                 <div class="font-mono text-[10px] tracking-[.3em] text-bronze mb-2 font-bold">[ JOB_BOARD ]</div>
                 <h1 class="font-serif text-3xl sm:text-4xl font-black dark:text-gray-50 text-gray-900">งานที่เปิดรับ</h1>
             </div>
-            <!-- Filter -->
             <div class="flex flex-wrap gap-2" id="filter-btns">
-                <button onclick="setFilter('all')"        data-f="all"        class="filter-btn active font-mono text-[10px] tracking-wider px-3 py-1.5 rounded-sm border dark:border-bronze/40 border-bronze-dark/40 text-bronze font-bold">ทั้งหมด</button>
-                <button onclick="setFilter('open')"       data-f="open"       class="filter-btn font-mono text-[10px] tracking-wider px-3 py-1.5 rounded-sm border dark:border-white/10 border-black/10 dark:text-zinc-400 text-zinc-600">เปิดรับ</button>
-                <button onclick="setFilter('urgent')"     data-f="urgent"     class="filter-btn font-mono text-[10px] tracking-wider px-3 py-1.5 rounded-sm border dark:border-white/10 border-black/10 dark:text-zinc-400 text-zinc-600">ด่วน</button>
+                <button onclick="setFilter('all')"         data-f="all"         class="filter-btn active font-mono text-[10px] tracking-wider px-3 py-1.5 rounded-sm border dark:border-bronze/40 border-bronze-dark/40 text-bronze font-bold">ทั้งหมด</button>
+                <button onclick="setFilter('open')"        data-f="open"        class="filter-btn font-mono text-[10px] tracking-wider px-3 py-1.5 rounded-sm border dark:border-white/10 border-black/10 dark:text-zinc-400 text-zinc-600">เปิดรับ</button>
+                <button onclick="setFilter('urgent')"      data-f="urgent"      class="filter-btn font-mono text-[10px] tracking-wider px-3 py-1.5 rounded-sm border dark:border-white/10 border-black/10 dark:text-zinc-400 text-zinc-600">ด่วน</button>
                 <button onclick="setFilter('very_urgent')" data-f="very_urgent" class="filter-btn font-mono text-[10px] tracking-wider px-3 py-1.5 rounded-sm border dark:border-white/10 border-black/10 dark:text-zinc-400 text-zinc-600">ด่วนมาก</button>
             </div>
         </div>
     </div>
-
-    <!-- Jobs grid -->
     <div class="max-w-[1440px] mx-auto px-5 md:px-10 py-8">
         <div id="jobs-loading" class="text-center py-20">
             <i class="fa-solid fa-circle-notch fa-spin text-bronze text-2xl mb-3 block"></i>
@@ -157,22 +294,58 @@
     </div>
 </div>
 
+<!-- ════════════ LOGIN MODAL ════════════ -->
+<div id="login-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+    <div class="absolute inset-0 dark:bg-[#0D0D0C]/90 bg-[#F9F8F6]/90 backdrop-blur-md" onclick="closeLoginModal()"></div>
+    <div class="modal-box relative w-full max-w-sm glass border dark:border-[rgba(197,168,128,.2)] border-[rgba(139,100,48,.2)] rounded-sm p-8 z-10 shadow-2xl">
+        <button onclick="closeLoginModal()" class="absolute top-4 right-4 dark:text-zinc-500 text-zinc-500 hover:text-red-400">
+            <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+        <div class="text-center mb-6">
+            <div class="inline-flex items-center gap-2 border border-bronze/40 px-3 py-1 mb-4 bg-[rgba(197,168,128,.07)] rounded-sm">
+                <i class="fa-solid fa-lock text-bronze text-[9px]"></i>
+                <span class="font-mono text-[9px] tracking-[.3em] font-bold text-bronze">CREATOR_LOGIN</span>
+            </div>
+            <h2 class="font-serif text-2xl font-black dark:text-gray-50 text-gray-900 mb-1">เข้าสู่ระบบ</h2>
+            <p class="dark:text-zinc-400 text-zinc-600 text-xs">สำหรับ Creator ที่ได้รับการอนุมัติแล้ว</p>
+        </div>
+        <form id="login-form" class="space-y-4">
+            <div>
+                <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">อีเมล</label>
+                <input type="email" id="l-email" required placeholder="your@email.com"
+                    class="w-full dark:bg-white/[.05] bg-black/[.05] border dark:border-white/10 border-black/10 rounded-sm p-3 dark:text-gray-50 text-gray-900 text-sm placeholder:dark:text-zinc-600 placeholder:text-zinc-400">
+            </div>
+            <div>
+                <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">รหัสผ่าน</label>
+                <input type="password" id="l-pass" required placeholder="••••••••"
+                    class="w-full dark:bg-white/[.05] bg-black/[.05] border dark:border-white/10 border-black/10 rounded-sm p-3 dark:text-gray-50 text-gray-900 text-sm placeholder:dark:text-zinc-600 placeholder:text-zinc-400">
+            </div>
+            <button type="submit" id="login-btn" class="btn-bronze w-full py-3.5 font-mono text-xs rounded-sm flex items-center justify-center gap-2">
+                <i class="fa-solid fa-right-to-bracket"></i> เข้าสู่ระบบ
+            </button>
+            <div id="login-error" class="hidden text-center py-2.5 border border-red-500/40 bg-red-500/[.07] rounded-sm">
+                <p id="login-error-msg" class="font-mono text-xs text-red-400 font-bold"></p>
+            </div>
+            <p class="text-center font-mono text-[11px] dark:text-zinc-500 text-zinc-500">
+                ยังไม่มีบัญชี? <a href="/register.html" class="text-bronze hover:underline">สมัครสมาชิก →</a>
+            </p>
+        </form>
+    </div>
+</div>
+
 <!-- ════════════ JOB DETAIL MODAL ════════════ -->
-<div id="job-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
-    <div class="absolute inset-0 dark:bg-[#0D0D0C]/92 bg-[#F9F8F6]/92 backdrop-blur-md" onclick="closeModal()"></div>
-    <div class="modal-box relative w-full max-w-2xl glass border dark:border-[rgba(197,168,128,.2)] border-[rgba(139,100,48,.2)] rounded-sm overflow-hidden my-8 z-10 shadow-2xl max-h-[90vh] overflow-y-auto sh">
-        <button onclick="closeModal()" class="absolute top-4 right-4 p-2 dark:bg-black/50 bg-white/70 rounded-full dark:text-zinc-400 text-zinc-600 hover:text-bronze z-20 backdrop-blur-sm">
+<div id="job-modal" class="fixed inset-0 z-[110] hidden items-center justify-center p-4">
+    <div class="absolute inset-0 dark:bg-[#0D0D0C]/92 bg-[#F9F8F6]/92 backdrop-blur-md" onclick="closeJobModal()"></div>
+    <div class="modal-box relative w-full max-w-2xl glass border dark:border-[rgba(197,168,128,.2)] border-[rgba(139,100,48,.2)] rounded-sm z-10 shadow-2xl max-h-[90vh] overflow-y-auto sh">
+        <button onclick="closeJobModal()" class="absolute top-4 right-4 p-2 dark:bg-black/50 bg-white/70 rounded-full dark:text-zinc-400 text-zinc-600 hover:text-bronze z-20 backdrop-blur-sm">
             <i class="fa-solid fa-xmark text-lg"></i>
         </button>
         <div class="p-8">
-            <!-- Code + Status -->
             <div class="flex items-center gap-3 mb-5">
                 <span id="m-code" class="font-mono text-xs font-black text-bronze bg-[rgba(197,168,128,.1)] border border-bronze/30 px-3 py-1 rounded-sm"></span>
                 <span id="m-status-badge" class="font-mono text-[10px] font-bold px-2.5 py-1 rounded-sm"></span>
             </div>
             <h2 id="m-title" class="font-serif text-3xl font-black dark:text-gray-50 text-gray-900 mb-6 leading-snug"></h2>
-
-            <!-- Details grid -->
             <div class="grid grid-cols-2 gap-4 mb-6">
                 <div class="dark:bg-white/[.04] bg-black/[.04] border dark:border-white/[.06] border-black/[.06] rounded-sm p-4">
                     <div class="font-mono text-[9px] tracking-widest dark:text-zinc-500 text-zinc-500 mb-1 uppercase">งบประมาณ</div>
@@ -183,7 +356,6 @@
                     <div id="m-deadline" class="font-sans text-sm font-semibold dark:text-gray-200 text-gray-800"></div>
                 </div>
             </div>
-
             <div class="space-y-4 mb-7">
                 <div>
                     <div class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-2">รายละเอียดงาน</div>
@@ -210,8 +382,6 @@
                     <p id="m-requirements" class="dark:text-zinc-300 text-zinc-700 text-sm leading-relaxed"></p>
                 </div>
             </div>
-
-            <!-- CTA -->
             <div class="border-t dark:border-white/[.07] border-black/[.07] pt-6">
                 <p class="dark:text-zinc-400 text-zinc-600 text-sm mb-4">
                     สนใจงานนี้? ทัก <strong class="text-bronze">Line OA</strong> แล้วแจ้งรหัสงานได้เลย
@@ -256,31 +426,49 @@ let currentJob = null;
 let currentFilter = 'all';
 
 function showBoard(){
-    document.getElementById('login-view').classList.add('hidden');
+    document.getElementById('public-view').classList.add('hidden');
     document.getElementById('board-view').classList.remove('hidden');
+    document.getElementById('header-login-btn').classList.add('hidden');
     document.getElementById('creator-info').classList.remove('hidden');
     document.getElementById('creator-info').classList.add('flex');
     document.getElementById('logout-btn').classList.remove('hidden');
     if(creatorData) document.getElementById('creator-name').textContent = creatorData.name;
+    closeLoginModal();
     loadJobs();
 }
 
-function showLogin(){
-    document.getElementById('login-view').classList.remove('hidden');
+function showPublic(){
     document.getElementById('board-view').classList.add('hidden');
+    document.getElementById('public-view').classList.remove('hidden');
+    document.getElementById('header-login-btn').classList.remove('hidden');
     document.getElementById('creator-info').classList.add('hidden');
     document.getElementById('logout-btn').classList.add('hidden');
 }
 
 // Auto-login if token exists
-if(token) showBoard(); else showLogin();
+if(token) showBoard();
+
+// ─── Login modal ─────────────────────────────────────────────
+function openLoginModal(){
+    const m = document.getElementById('login-modal');
+    m.classList.remove('hidden');
+    m.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+    setTimeout(()=>document.getElementById('l-email').focus(), 100);
+}
+function closeLoginModal(){
+    const m = document.getElementById('login-modal');
+    m.classList.add('hidden');
+    m.classList.remove('flex');
+    document.body.style.overflow = '';
+}
 
 // ─── Logout ──────────────────────────────────────────────────
 document.getElementById('logout-btn').onclick = function(){
     localStorage.removeItem('p2w-creator-token');
     localStorage.removeItem('p2w-creator-data');
     token = null; creatorData = null;
-    showLogin();
+    showPublic();
 };
 
 // ─── Login form ──────────────────────────────────────────────
@@ -292,7 +480,6 @@ document.getElementById('login-form').addEventListener('submit', async function(
     errEl.classList.add('hidden');
     btn.disabled = true;
     btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> กำลังตรวจสอบ...';
-
     try {
         const res = await fetch('/api/auth/login',{
             method:'POST', headers:{'Content-Type':'application/json'},
@@ -322,7 +509,7 @@ document.getElementById('login-form').addEventListener('submit', async function(
 async function loadJobs(){
     try {
         const res = await fetch('/api/jobs',{ headers:{ Authorization:'Bearer '+token } });
-        if(res.status === 401){ localStorage.removeItem('p2w-creator-token'); showLogin(); return; }
+        if(res.status === 401){ localStorage.removeItem('p2w-creator-token'); showPublic(); return; }
         allJobs = await res.json();
         renderJobs();
     } catch {
@@ -335,26 +522,21 @@ function setFilter(f){
     currentFilter = f;
     document.querySelectorAll('.filter-btn').forEach(b=>{
         const active = b.dataset.f === f;
-        b.classList.toggle('active', active);
-        if(active){ b.classList.add('dark:border-bronze/40','border-bronze-dark/40','text-bronze'); b.classList.remove('dark:border-white/10','border-black/10','dark:text-zinc-400','text-zinc-600'); }
-        else { b.classList.remove('dark:border-bronze/40','border-bronze-dark/40','text-bronze'); b.classList.add('dark:border-white/10','border-black/10','dark:text-zinc-400','text-zinc-600'); }
+        if(active){ b.classList.add('dark:border-bronze/40','border-bronze-dark/40','text-bronze','font-bold'); b.classList.remove('dark:border-white/10','border-black/10','dark:text-zinc-400','text-zinc-600'); }
+        else { b.classList.remove('dark:border-bronze/40','border-bronze-dark/40','text-bronze','font-bold'); b.classList.add('dark:border-white/10','border-black/10','dark:text-zinc-400','text-zinc-600'); }
     });
     renderJobs();
 }
 
 function renderJobs(){
     const grid = document.getElementById('jobs-grid');
-    const loading = document.getElementById('jobs-loading');
-    const empty = document.getElementById('jobs-empty');
-    loading.classList.add('hidden');
-
-    const filtered = currentFilter === 'all' ? allJobs : allJobs.filter(j=>j.status===currentFilter);
-    if(!filtered.length){ grid.innerHTML=''; empty.classList.remove('hidden'); return; }
-    empty.classList.add('hidden');
-
+    document.getElementById('jobs-loading').classList.add('hidden');
+    const filtered = currentFilter==='all' ? allJobs : allJobs.filter(j=>j.status===currentFilter);
+    if(!filtered.length){ grid.innerHTML=''; document.getElementById('jobs-empty').classList.remove('hidden'); return; }
+    document.getElementById('jobs-empty').classList.add('hidden');
     grid.innerHTML = filtered.map((j,i)=>`
         <div class="job-card fade-up glass border dark:border-white/[.08] border-black/[.08] rounded-sm p-6 cursor-pointer flex flex-col gap-4"
-             onclick="openModal(${j.id})" style="transition-delay:${i*0.05}s">
+             onclick="openJobModal(${j.id})" style="transition-delay:${i*0.05}s">
             <div class="flex justify-between items-start gap-3">
                 <span class="font-mono text-xs font-black text-bronze bg-[rgba(197,168,128,.1)] border border-bronze/30 px-2.5 py-1 rounded-sm shrink-0">${j.code}</span>
                 <span class="font-mono text-[10px] font-bold px-2.5 py-1 rounded-sm badge-${j.status}">${statusLabel(j.status)}</span>
@@ -364,102 +546,91 @@ function renderJobs(){
                 <p class="text-sm dark:text-zinc-400 text-zinc-600 leading-relaxed line-clamp-2">${j.description||'-'}</p>
             </div>
             <div class="border-t dark:border-white/[.07] border-black/[.07] pt-4 flex flex-wrap gap-3">
-                ${j.budget ? `<div class="flex items-center gap-1.5 font-mono text-xs text-bronze font-bold"><i class="fa-solid fa-coins text-[10px]"></i>${j.budget}</div>` : ''}
-                ${j.deadline ? `<div class="flex items-center gap-1.5 font-mono text-xs dark:text-zinc-400 text-zinc-500"><i class="fa-regular fa-calendar text-[10px]"></i>${fmtDate(j.deadline)}</div>` : ''}
-                ${j.location ? `<div class="flex items-center gap-1.5 font-mono text-xs dark:text-zinc-400 text-zinc-500"><i class="fa-solid fa-location-dot text-[10px]"></i>${j.location}</div>` : ''}
+                ${j.budget?`<div class="flex items-center gap-1.5 font-mono text-xs text-bronze font-bold"><i class="fa-solid fa-coins text-[10px]"></i>${j.budget}</div>`:''}
+                ${j.deadline?`<div class="flex items-center gap-1.5 font-mono text-xs dark:text-zinc-400 text-zinc-500"><i class="fa-regular fa-calendar text-[10px]"></i>${fmtDate(j.deadline)}</div>`:''}
+                ${j.location?`<div class="flex items-center gap-1.5 font-mono text-xs dark:text-zinc-400 text-zinc-500"><i class="fa-solid fa-location-dot text-[10px]"></i>${j.location}</div>`:''}
             </div>
-            ${j.channels&&j.channels.length ? `
-            <div class="flex flex-wrap gap-1.5">
-                ${j.channels.map(c=>`<span class="font-mono text-[9px] px-2 py-0.5 dark:bg-white/[.05] bg-black/[.05] border dark:border-white/[.07] border-black/[.07] rounded-sm dark:text-zinc-400 text-zinc-500 uppercase">${c}</span>`).join('')}
-            </div>` : ''}
+            ${j.channels&&j.channels.length?`<div class="flex flex-wrap gap-1.5">${j.channels.map(c=>`<span class="font-mono text-[9px] px-2 py-0.5 dark:bg-white/[.05] bg-black/[.05] border dark:border-white/[.07] border-black/[.07] rounded-sm dark:text-zinc-400 text-zinc-500 uppercase">${c}</span>`).join('')}</div>`:''}
         </div>
     `).join('');
-
-    // Trigger fade-up
-    setTimeout(()=>{ document.querySelectorAll('.job-card.fade-up').forEach(el=>el.classList.add('in')); }, 50);
+    setTimeout(()=>document.querySelectorAll('.job-card.fade-up').forEach(el=>el.classList.add('in')), 50);
 }
 
-// ─── Modal ───────────────────────────────────────────────────
-function openModal(id){
+// ─── Job Detail Modal ─────────────────────────────────────────
+function openJobModal(id){
     const j = allJobs.find(x=>x.id===id);
     if(!j) return;
     currentJob = j;
-
     document.getElementById('m-code').textContent = j.code;
     document.getElementById('m-code-hint').textContent = j.code;
     document.getElementById('m-title').textContent = j.title;
     document.getElementById('m-budget').textContent = j.budget || 'ติดต่อสอบถาม';
     document.getElementById('m-deadline').textContent = j.deadline ? fmtDate(j.deadline) : 'ไม่ระบุ';
     document.getElementById('m-desc').textContent = j.description || '-';
-
     const sb = document.getElementById('m-status-badge');
     sb.className = `font-mono text-[10px] font-bold px-2.5 py-1 rounded-sm badge-${j.status}`;
     sb.textContent = statusLabel(j.status);
-
-    // Optional rows
     setOptRow('m-type-row','m-type', j.content_type, v=>`<span class="font-mono text-[10px] px-2.5 py-1 dark:bg-white/[.06] bg-black/[.06] border dark:border-white/10 border-black/10 rounded-sm dark:text-zinc-300 text-zinc-600">${v}</span>`);
     setOptRow('m-chan-row','m-channels', j.channels, v=>`<span class="font-mono text-[10px] px-2.5 py-1 dark:bg-white/[.06] bg-black/[.06] border dark:border-white/10 border-black/10 rounded-sm dark:text-zinc-300 text-zinc-600 uppercase">${v}</span>`);
     setOptText('m-dur-row','m-duration', j.duration);
     setOptText('m-loc-row','m-location', j.location);
     setOptText('m-req-row','m-requirements', j.requirements);
-
     const modal = document.getElementById('job-modal');
     modal.classList.remove('hidden');
     modal.classList.add('flex');
-    document.body.style.overflow = 'hidden';
 }
-
-function closeModal(){
+function closeJobModal(){
     document.getElementById('job-modal').classList.add('hidden');
     document.getElementById('job-modal').classList.remove('flex');
-    document.body.style.overflow = '';
 }
-
-function setOptRow(rowId, contentId, arr, tmpl){
-    const row = document.getElementById(rowId);
-    const el = document.getElementById(contentId);
-    if(arr && arr.length){ row.classList.remove('hidden'); el.innerHTML=arr.map(tmpl).join(''); }
+function setOptRow(rowId,contentId,arr,tmpl){
+    const row=document.getElementById(rowId);
+    const el=document.getElementById(contentId);
+    if(arr&&arr.length){ row.classList.remove('hidden'); el.innerHTML=arr.map(tmpl).join(''); }
     else row.classList.add('hidden');
 }
-function setOptText(rowId, contentId, val){
-    const row = document.getElementById(rowId);
+function setOptText(rowId,contentId,val){
+    const row=document.getElementById(rowId);
     if(val){ row.classList.remove('hidden'); document.getElementById(contentId).textContent=val; }
     else row.classList.add('hidden');
 }
-
 function copyCode(){
     if(!currentJob) return;
     navigator.clipboard.writeText(currentJob.code).then(()=>{
         toast('คัดลอกรหัสงาน '+currentJob.code+' แล้ว!','success');
-        const btn = document.getElementById('copy-code-btn');
+        const btn=document.getElementById('copy-code-btn');
         btn.innerHTML='<i class="fa-solid fa-check"></i> คัดลอกแล้ว!';
         setTimeout(()=>btn.innerHTML='<i class="fa-solid fa-copy"></i> คัดลอกรหัสงาน',2000);
     });
 }
 
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeJobModal(); closeLoginModal(); } });
 
 // ─── Helpers ─────────────────────────────────────────────────
 function statusLabel(s){
-    return { open:'เปิดรับ', urgent:'ด่วน', very_urgent:'ด่วนมาก!', taken:'รับแล้ว', completed:'เสร็จสิ้น', cancelled:'ยกเลิก' }[s] || s;
+    return { open:'เปิดรับ', urgent:'ด่วน', very_urgent:'ด่วนมาก!', taken:'รับแล้ว', completed:'เสร็จสิ้น', cancelled:'ยกเลิก' }[s]||s;
 }
 function fmtDate(d){
-    if(!d) return '-';
-    return new Date(d).toLocaleDateString('th-TH',{ year:'numeric', month:'short', day:'numeric' });
+    return d ? new Date(d).toLocaleDateString('th-TH',{year:'numeric',month:'short',day:'numeric'}) : '-';
 }
 
 // ─── Toast ───────────────────────────────────────────────────
-function toast(msg, type='success'){
-    const c = document.getElementById('toasts');
-    const el = document.createElement('div');
-    el.className = `pointer-events-auto p-3.5 rounded-sm border shadow-lg flex items-center gap-2.5 backdrop-blur-md font-mono text-xs font-bold leading-snug ${
-        type==='success' ? 'border-[rgba(197,168,128,.35)] dark:bg-[#0D0D0C]/90 bg-[#F9F8F6]/90 text-bronze' :
-        'border-red-500/30 dark:bg-red-950/80 bg-red-50/80 text-red-400'
+function toast(msg,type='success'){
+    const c=document.getElementById('toasts');
+    const el=document.createElement('div');
+    el.className=`pointer-events-auto p-3.5 rounded-sm border shadow-lg flex items-center gap-2.5 backdrop-blur-md font-mono text-xs font-bold leading-snug ${
+        type==='success'?'border-[rgba(197,168,128,.35)] dark:bg-[#0D0D0C]/90 bg-[#F9F8F6]/90 text-bronze':'border-red-500/30 dark:bg-red-950/80 bg-red-50/80 text-red-400'
     }`;
-    el.innerHTML = `<i class="fa-solid fa-circle-check shrink-0"></i>${msg}`;
+    el.innerHTML=`<i class="fa-solid fa-circle-check shrink-0"></i>${msg}`;
     c.appendChild(el);
-    setTimeout(()=>el.remove(), 3500);
+    setTimeout(()=>el.remove(),3500);
 }
+
+// ─── Fade-up observer ────────────────────────────────────────
+const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
+},{ threshold:.1 });
+document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
 </script>
 </body>
 </html>
