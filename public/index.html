@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P2W INTERPLUS | รับรีวิวสินค้า & นายหน้าทั่วไป</title>
+    <meta name="description" content="บริการรับรีวิวสินค้า รีวิวร้านอาหาร สถานที่ และนายหน้าทั่วไป โดยทีมมืออาชีพ P2W INTERPLUS">
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        bronze: '#C5A880',
+                        'bronze-light': '#E8C99A',
+                        'bronze-dark': '#8B6430',
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'Georgia', 'serif'],
+                        sans:  ['"Prompt"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* ─── Base ─── */
+        body { font-family: 'Prompt', sans-serif; }
+        .dark body { background-color: #0D0D0C; color: #e4e4e7; }
+        body         { background-color: #F9F8F6; color: #27272a; }
+
+        /* ─── Background FX ─── */
+        .grid-pattern {
+            background-image:
+                linear-gradient(to right, rgba(197,168,128,0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(197,168,128,0.05) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        .light-grid {
+            background-image:
+                linear-gradient(to right, rgba(0,0,0,0.035) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0,0,0,0.035) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        .scanline {
+            background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.15) 51%);
+            background-size: 100% 4px;
+        }
+
+        /* ─── Glass card ─── */
+        .glass-card { background: rgba(255,255,255,0.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+        .dark .glass-card { background: rgba(13,13,12,0.78); }
+
+        /* ─── Bronze gradient text ─── */
+        .text-bronze-gradient {
+            background: linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #C5A880);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+        }
+
+        /* ─── Scroll hide ─── */
+        .scroll-hide { scrollbar-width: none; -ms-overflow-style: none; }
+        .scroll-hide::-webkit-scrollbar { display: none; }
+
+        /* ─── Fade up animation ─── */
+        .fade-up { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease-out, transform 0.7s ease-out; }
+        .fade-up.d1 { transition-delay: 0.1s; }
+        .fade-up.d2 { transition-delay: 0.2s; }
+        .fade-up.d3 { transition-delay: 0.3s; }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+        /* ─── Button bronze ─── */
+        .btn-bronze {
+            background: #C5A880; color: #0D0D0C;
+            font-weight: 700; letter-spacing: 0.15em;
+            transition: all 0.3s;
+        }
+        .btn-bronze:hover { box-shadow: 0 0 28px rgba(197,168,128,0.5); transform: scale(1.02); }
+        .btn-bronze:active { transform: scale(0.98); }
+
+        /* ─── Card hover ─── */
+        .card-glow { transition: all 0.4s; }
+        .card-glow:hover { border-color: rgba(197,168,128,0.45) !important; box-shadow: 0 0 32px rgba(197,168,128,0.08); }
+
+        /* ─── Pricing popular ─── */
+        .pricing-popular { border-color: #C5A880 !important; box-shadow: 0 0 32px rgba(197,168,128,0.15); }
+
+        /* ─── Nav underline ─── */
+        .nav-btn { position: relative; }
+        .nav-btn.active { color: #C5A880; }
+        .nav-btn.active::after {
+            content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+            height: 2px; background: #C5A880; border-radius: 1px;
+        }
+
+        /* ─── Toast ─── */
+        @keyframes toastIn  { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes toastOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
+        .toast { animation: toastIn 0.3s ease-out; }
+        .toast.out { animation: toastOut 0.3s ease-in forwards; }
+
+        /* ─── Modal backdrop ─── */
+        .modal-backdrop { transition: opacity 0.2s; }
+
+        /* ─── Input focus ─── */
+        input:focus, select:focus, textarea:focus { border-color: #C5A880 !important; outline: none; }
+
+        /* ─── Scrollbar ─── */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(197,168,128,0.3); border-radius: 2px; }
+
+        /* ─── Transition override ─── */
+        *, *::before, *::after {
+            transition-property: background-color, border-color, color;
+            transition-duration: 300ms; transition-timing-function: ease;
+        }
+        button, a { transition: all 0.28s ease !important; }
+        img { transition: transform 0.6s ease !important; }
+        .fade-up { transition: opacity 0.7s ease-out, transform 0.7s ease-out !important; }
+    </style>
+</head>
+
+<body class="min-h-screen relative">
+
+    <!-- ░░ FIXED BACKGROUND ░░ -->
+    <div class="fixed inset-0 z-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute inset-0 dark:bg-[#0D0D0C] bg-[#F9F8F6]"></div>
+        <div class="absolute inset-0 dark:grid-pattern light-grid opacity-70" id="bg-grid"></div>
+        <div class="absolute inset-0 scanline opacity-[0.18]"></div>
+        <!-- Soft radial glow -->
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,rgba(197,168,128,0.07),transparent)]"></div>
+    </div>
+
+    <!-- ░░ HEADER ░░ -->
+    <header id="header" class="fixed top-0 w-full z-50 dark:bg-[#0D0D0C]/88 bg-[#F9F8F6]/88 backdrop-blur-md border-b dark:border-white/[0.07] border-black/[0.07]">
+        <div class="flex justify-between items-center max-w-[1440px] mx-auto px-5 md:px-20 h-20">
+
+            <!-- Logo -->
+            <a href="/" class="flex items-center gap-3 group shrink-0">
+                <img src="logo.png" alt="P2W INTERPLUS" class="h-10 w-auto" onerror="this.style.display='none'">
+                <div>
+                    <div class="font-serif text-base md:text-lg font-black text-bronze-gradient tracking-tight leading-tight">P2W INTERPLUS</div>
+                    <div class="font-mono text-[8px] md:text-[9px] tracking-[0.25em] dark:text-[#C5A880]/55 text-[#8B6430]/55 uppercase font-bold">REVIEW &amp; BROKER</div>
+                </div>
+            </a>
+
+            <!-- Desktop nav -->
+            <nav class="hidden lg:flex gap-8" id="desktop-nav">
+                <button onclick="scrollTo('hero')"      class="nav-btn font-mono text-[11px] tracking-widest font-bold dark:text-zinc-300 text-zinc-700 hover:text-bronze" data-sec="hero">HOME</button>
+                <button onclick="scrollTo('services')"  class="nav-btn font-mono text-[11px] tracking-widest font-bold dark:text-zinc-300 text-zinc-700 hover:text-bronze" data-sec="services">SERVICES</button>
+                <button onclick="scrollTo('portfolio')" class="nav-btn font-mono text-[11px] tracking-widest font-bold dark:text-zinc-300 text-zinc-700 hover:text-bronze" data-sec="portfolio">PORTFOLIO</button>
+                <button onclick="scrollTo('pricing')"   class="nav-btn font-mono text-[11px] tracking-widest font-bold dark:text-zinc-300 text-zinc-700 hover:text-bronze" data-sec="pricing">PRICING</button>
+                <button onclick="scrollTo('contact')"   class="nav-btn font-mono text-[11px] tracking-widest font-bold dark:text-zinc-300 text-zinc-700 hover:text-bronze" data-sec="contact">CONTACT</button>
+            </nav>
+
+            <!-- Right actions -->
+            <div class="flex items-center gap-3">
+                <a href="/" class="hidden md:flex items-center gap-1.5 font-mono text-[10px] tracking-wider font-bold dark:text-zinc-500 text-zinc-500 hover:text-bronze">
+                    <i class="fa-solid fa-house text-[10px]"></i> MAIN_HUB
+                </a>
+                <button id="theme-toggle" aria-label="Toggle theme"
+                    class="w-9 h-9 flex items-center justify-center border dark:border-white/[0.08] border-black/[0.08] rounded-sm dark:text-zinc-400 text-zinc-600 hover:text-bronze hover:border-bronze/40">
+                    <i class="fa-solid fa-sun hidden" id="icon-sun"></i>
+                    <i class="fa-solid fa-moon"       id="icon-moon"></i>
+                </button>
+                <button onclick="openContact()" class="btn-bronze hidden sm:block px-5 py-2.5 font-mono text-[11px] rounded-sm">
+                    ติดต่อเราเลย
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ░░ MAIN ░░ -->
+    <main class="relative z-10 pt-20">
+
+        <!-- ══════════════════════════ HERO ══════════════════════════ -->
+        <section id="hero" class="relative min-h-[calc(100vh-80px)] flex flex-col items-center justify-center text-center px-5 border-b dark:border-white/[0.05] border-black/[0.05] overflow-hidden">
+            <div class="max-w-4xl relative z-10">
+
+                <!-- Badge -->
+                <div class="fade-up inline-flex items-center gap-2 border border-bronze/40 px-4 py-1.5 mb-8 bg-[rgba(197,168,128,0.07)] rounded-sm">
+                    <span class="w-1.5 h-1.5 rounded-full bg-bronze animate-pulse inline-block"></span>
+                    <span class="font-mono text-[10px] tracking-[0.3em] font-bold text-bronze">REVIEW_SVC // P2W_INTERPLUS_V1</span>
+                </div>
+
+                <!-- Headline -->
+                <h1 class="fade-up d1 font-serif text-4xl sm:text-6xl md:text-7xl font-black leading-[1.1] mb-6 tracking-tight dark:text-gray-50 text-gray-900">
+                    รีวิวที่คุณ<br>
+                    <span class="text-bronze-gradient italic">วางใจได้</span>
+                </h1>
+
+                <!-- Sub -->
+                <p class="fade-up d2 text-base sm:text-lg dark:text-zinc-400 text-zinc-600 max-w-2xl mx-auto mb-10 leading-relaxed">
+                    บริการรีวิวสินค้า ร้านอาหาร สถานที่<br class="hidden sm:block">
+                    และนายหน้าทั่วไป ด้วยทีมมืออาชีพที่ซื่อสัตย์และเชื่อถือได้
+                </p>
+
+                <!-- Stats -->
+                <div class="fade-up d2 flex justify-center gap-8 mb-10">
+                    <div class="text-center">
+                        <div class="font-serif text-3xl font-black text-bronze">100+</div>
+                        <div class="font-mono text-[9px] tracking-widest dark:text-zinc-500 text-zinc-500 mt-1 uppercase">รีวิวสำเร็จ</div>
+                    </div>
+                    <div class="w-px dark:bg-white/10 bg-black/10 self-stretch"></div>
+                    <div class="text-center">
+                        <div class="font-serif text-3xl font-black text-bronze">3</div>
+                        <div class="font-mono text-[9px] tracking-widest dark:text-zinc-500 text-zinc-500 mt-1 uppercase">บริการหลัก</div>
+                    </div>
+                    <div class="w-px dark:bg-white/10 bg-black/10 self-stretch"></div>
+                    <div class="text-center">
+                        <div class="font-serif text-3xl font-black text-bronze">24h</div>
+                        <div class="font-mono text-[9px] tracking-widest dark:text-zinc-500 text-zinc-500 mt-1 uppercase">ตอบกลับ</div>
+                    </div>
+                </div>
+
+                <!-- CTAs -->
+                <div class="fade-up d3 flex flex-col sm:flex-row gap-4 justify-center items-center max-w-xs sm:max-w-none mx-auto">
+                    <button onclick="openContact()" class="btn-bronze w-full sm:w-auto px-12 py-4 font-mono text-xs rounded-sm">
+                        ติดต่อรับงาน &nbsp;→
+                    </button>
+                    <button onclick="scrollTo('portfolio')" class="w-full sm:w-auto border dark:border-[rgba(197,168,128,0.4)] border-[rgba(139,100,48,0.4)] dark:text-bronze text-bronze-dark px-10 py-4 font-mono text-xs font-bold tracking-widest rounded-sm dark:hover:bg-[rgba(197,168,128,0.07)] hover:bg-[rgba(197,168,128,0.07)]">
+                        <i class="fa-solid fa-eye mr-2"></i>ดูตัวอย่างงาน
+                    </button>
+                </div>
+            </div>
+
+            <!-- Scroll hint -->
+            <button onclick="scrollTo('services')" aria-label="Scroll down"
+                class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce dark:text-zinc-600 text-zinc-400 hover:text-bronze">
+                <i class="fa-solid fa-chevron-down text-lg"></i>
+            </button>
+        </section>
+
+        <!-- ══════════════════════════ SERVICES ══════════════════════════ -->
+        <section id="services" class="py-24 px-5 md:px-20 border-b dark:border-white/[0.05] border-black/[0.05]">
+            <div class="max-w-[1440px] mx-auto">
+
+                <!-- Header -->
+                <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+                    <div class="fade-up">
+                        <div class="font-mono text-[10px] tracking-[0.3em] text-bronze mb-4 font-bold">[ SERVICES_AVAILABLE ]</div>
+                        <h2 class="font-serif text-3xl sm:text-5xl font-black dark:text-gray-50 text-gray-900 tracking-tight mb-3">
+                            SERVICES<span class="text-bronze">.01</span>
+                        </h2>
+                        <p class="dark:text-zinc-400 text-zinc-600 max-w-lg text-sm md:text-base leading-relaxed">
+                            บริการรีวิวและนายหน้าครบวงจร พร้อมทีมที่มีประสบการณ์จริง ไม่ใช่แค่คำพูด
+                        </p>
+                    </div>
+                    <div class="font-mono text-[10px] tracking-[0.2em] text-bronze/60 font-bold border-b border-bronze/25 pb-2 fade-up shrink-0">
+                        [ STATUS: OPEN_FOR_WORK ]
+                    </div>
+                </div>
+
+                <!-- 3 Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                    <!-- SRV-01 -->
+                    <div class="fade-up glass-card p-8 rounded-sm border dark:border-white/[0.08] border-black/[0.08] card-glow group flex flex-col justify-between relative overflow-hidden">
+                        <div class="absolute top-4 right-4 font-mono text-[9px] dark:text-white/[0.12] text-black/[0.12] font-bold">REF: SRV-01</div>
+                        <div>
+                            <div class="w-14 h-14 flex items-center justify-center border dark:border-white/[0.08] border-black/[0.08] rounded-sm mb-8 bg-[rgba(197,168,128,0.08)] group-hover:scale-110 transition-transform duration-300">
+                                <i class="fa-solid fa-star text-bronze text-xl"></i>
+                            </div>
+                            <div class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-2">PRODUCT</div>
+                            <h3 class="font-serif text-2xl font-black dark:text-gray-50 text-gray-900 mb-3 leading-snug">รับรีวิวสินค้า</h3>
+                            <p class="text-sm dark:text-zinc-400 text-zinc-600 leading-relaxed mb-6">
+                                ทดสอบและรีวิวสินค้าทุกประเภทอย่างตรงไปตรงมา ด้วยมุมมองผู้ใช้จริง พร้อมภาพประกอบและข้อสรุปที่ชัดเจน
+                            </p>
+                            <ul class="space-y-2">
+                                <li class="flex items-center gap-2 font-mono text-[11px] dark:text-zinc-400 text-zinc-500">
+                                    <i class="fa-solid fa-check text-bronze text-[9px] shrink-0"></i> รีวิวสินค้าทุกประเภท
+                                </li>
+                                <li class="flex items-center gap-2 font-mono text-[11px] dark:text-zinc-400 text-zinc-500">
+                                    <i class="fa-solid fa-check text-bronze text-[9px] shrink-0"></i> ภาพถ่ายสินค้าจริง
+                                </li>
+                                <li class="flex items-center gap-2 font-mono text-[11px] dark:text-zinc-400 text-zinc-500">
+                                    <i class="fa-solid fa-check text-bronze text-[9px] shrink-0"></i> โพสต์ลงแพลตฟอร์ม
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="border-t dark:border-white/[0.08] border-black/[0.08] pt-4 mt-6 flex justify-between items-center">
+                            <span class="font-mono text-[10px] tracking-wider text-bronze font-bold">SRV-01</span>
+                            <button onclick="scrollTo('contact')" class="font-mono text-[10px] dark:text-zinc-500 text-zinc-500 hover:text-bronze tracking-wider">สอบถาม →</button>
+                        </div>
+                    </div>
+
+                    <!-- SRV-02 -->
+                    <div class="fade-up d1 glass-card p-8 rounded-sm border dark:border-white/[0.08] border-black/[0.08] card-glow group flex flex-col justify-between relative overflow-hidden">
+                        <div class="absolute top-4 right-4 font-mono text-[9px] dark:text-white/[0.12] text-black/[0.12] font-bold">REF: SRV-02</div>
+                        <div>
+                            <div class="w-14 h-14 flex items-center justify-center border dark:border-white/[0.08] border-black/[0.08] rounded-sm mb-8 bg-[rgba(197,168,128,0.08)] group-hover:scale-110 transition-transform duration-300">
+                                <i class="fa-solid fa-utensils text-bronze text-xl"></i>
+                            </div>
+                            <div class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-2">GENERAL</div>
+                            <h3 class="font-serif text-2xl font-black dark:text-gray-50 text-gray-900 mb-3 leading-snug">รีวิวทั่วไป</h3>
+                            <p class="text-sm dark:text-zinc-400 text-zinc-600 leading-relaxed mb-6">
+                                รีวิวร้านอาหาร บริการ สถานที่ท่องเที่ยว ด้วยมาตรฐานระดับมืออาชีพ พร้อมคะแนนในแต่ละมิติ
+                            </p>
+                            <ul class="space-y-2">
+                                <li class="flex items-center gap-2 font-mono text-[11px] dark:text-zinc-400 text-zinc-500">
+                                    <i class="fa-solid fa-check text-bronze text-[9px] shrink-0"></i> รีวิวร้านอาหาร / คาเฟ่
+                                </li>
+                                <li class="flex items-center gap-2 font-mono text-[11px] dark:text-zinc-400 text-zinc-500">
+                                    <i class="fa-solid fa-check text-bronze text-[9px] shrink-0"></i> รีวิวที่พัก / โรงแรม
+                                </li>
+                                <li class="flex items-center gap-2 font-mono text-[11px] dark:text-zinc-400 text-zinc-500">
+                                    <i class="fa-solid fa-check text-bronze text-[9px] shrink-0"></i> รีวิวบริการทั่วไป
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="border-t dark:border-white/[0.08] border-black/[0.08] pt-4 mt-6 flex justify-between items-center">
+                            <span class="font-mono text-[10px] tracking-wider text-bronze font-bold">SRV-02</span>
+                            <button onclick="scrollTo('contact')" class="font-mono text-[10px] dark:text-zinc-500 text-zinc-500 hover:text-bronze tracking-wider">สอบถาม →</button>
+                        </div>
+                    </div>
+
+                    <!-- SRV-03 -->
+                    <div class="fade-up d2 glass-card p-8 rounded-sm border dark:border-white/[0.08] border-black/[0.08] card-glow group flex flex-col justify-between relative overflow-hidden">
+                        <div class="absolute top-4 right-4 font-mono text-[9px] dark:text-white/[0.12] text-black/[0.12] font-bold">REF: SRV-03</div>
+                        <div>
+                            <div class="w-14 h-14 flex items-center justify-center border dark:border-white/[0.08] border-black/[0.08] rounded-sm mb-8 bg-[rgba(197,168,128,0.08)] group-hover:scale-110 transition-transform duration-300">
+                                <i class="fa-solid fa-handshake text-bronze text-xl"></i>
+                            </div>
+                            <div class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-2">BROKER</div>
+                            <h3 class="font-serif text-2xl font-black dark:text-gray-50 text-gray-900 mb-3 leading-snug">นายหน้าทั่วไป</h3>
+                            <p class="text-sm dark:text-zinc-400 text-zinc-600 leading-relaxed mb-6">
+                                ตัวแทนขาย หาลูกค้าให้ เชื่อมโยงผู้ซื้อ-ผู้ขาย สร้างเครือข่ายการค้าและปิดดีลอย่างมืออาชีพ
+                            </p>
+                            <ul class="space-y-2">
+                                <li class="flex items-center gap-2 font-mono text-[11px] dark:text-zinc-400 text-zinc-500">
+                                    <i class="fa-solid fa-check text-bronze text-[9px] shrink-0"></i> หาลูกค้าให้
+                                </li>
+                                <li class="flex items-center gap-2 font-mono text-[11px] dark:text-zinc-400 text-zinc-500">
+                                    <i class="fa-solid fa-check text-bronze text-[9px] shrink-0"></i> เจรจาต่อรอง
+                                </li>
+                                <li class="flex items-center gap-2 font-mono text-[11px] dark:text-zinc-400 text-zinc-500">
+                                    <i class="fa-solid fa-check text-bronze text-[9px] shrink-0"></i> ปิดดีลอย่างมืออาชีพ
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="border-t dark:border-white/[0.08] border-black/[0.08] pt-4 mt-6 flex justify-between items-center">
+                            <span class="font-mono text-[10px] tracking-wider text-bronze font-bold">SRV-03</span>
+                            <button onclick="scrollTo('contact')" class="font-mono text-[10px] dark:text-zinc-500 text-zinc-500 hover:text-bronze tracking-wider">สอบถาม →</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════ PORTFOLIO ══════════════════════════ -->
+        <section id="portfolio" class="py-24 border-b dark:border-white/[0.05] border-black/[0.05] dark:bg-white/[0.015] bg-black/[0.015]">
+            <div class="max-w-[1440px] mx-auto">
+
+                <!-- Header -->
+                <div class="px-5 md:px-20 mb-12 flex justify-between items-end">
+                    <div class="fade-up">
+                        <h2 class="font-serif text-3xl sm:text-5xl font-black dark:text-gray-50 text-gray-900 tracking-tight">
+                            PROJECT_FILE<span class="text-bronze font-mono text-2xl">.log</span>
+                        </h2>
+                        <p class="font-mono text-[10px] tracking-widest dark:text-zinc-500 text-zinc-500 mt-2 uppercase">ตัวอย่างงานที่ผ่านมา</p>
+                    </div>
+                    <span class="hidden sm:block font-mono text-[10px] tracking-widest dark:text-zinc-500 text-zinc-500 dark:bg-white/[0.05] bg-black/[0.05] px-3 py-1 font-bold fade-up">
+                        PORTFOLIO // VERIFIED
+                    </span>
+                </div>
+
+                <!-- Horizontal scroll -->
+                <div class="flex gap-6 overflow-x-auto px-5 md:px-20 scroll-hide pb-8">
+
+                    <!-- P1 -->
+                    <div class="min-w-[280px] sm:min-w-[400px] group cursor-pointer shrink-0" onclick="openPortfolio(0)">
+                        <div class="relative aspect-video mb-4 overflow-hidden border dark:border-white/10 border-black/10 rounded-sm group-hover:border-bronze/40 duration-500 shadow-lg">
+                            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop" alt="Tech Review" loading="lazy" class="w-full h-full object-cover group-hover:scale-[1.08]">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#0D0D0C]/90 via-[#0D0D0C]/20 to-transparent"></div>
+                            <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+                                <span class="font-mono text-[10px] px-2.5 py-0.5 font-bold tracking-widest bg-bronze text-[#0D0D0C]">TECH</span>
+                                <span class="font-mono text-[10px] dark:text-zinc-400 text-zinc-300 font-bold bg-black/55 px-2 py-0.5 backdrop-blur-sm">12K views</span>
+                            </div>
+                        </div>
+                        <h3 class="dark:text-gray-50 text-gray-900 hover:text-bronze font-serif text-lg font-black">TECH_REVIEW_X1</h3>
+                        <p class="text-xs dark:text-zinc-500 text-zinc-500 font-mono mt-1 opacity-70">PRODUCT_REVIEW</p>
+                    </div>
+
+                    <!-- P2 -->
+                    <div class="min-w-[280px] sm:min-w-[400px] group cursor-pointer shrink-0" onclick="openPortfolio(1)">
+                        <div class="relative aspect-video mb-4 overflow-hidden border dark:border-white/10 border-black/10 rounded-sm group-hover:border-bronze/40 duration-500 shadow-lg">
+                            <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=800&auto=format&fit=crop" alt="Food Review" loading="lazy" class="w-full h-full object-cover group-hover:scale-[1.08]">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#0D0D0C]/90 via-[#0D0D0C]/20 to-transparent"></div>
+                            <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+                                <span class="font-mono text-[10px] px-2.5 py-0.5 font-bold tracking-widest bg-bronze text-[#0D0D0C]">FOOD</span>
+                                <span class="font-mono text-[10px] dark:text-zinc-400 text-zinc-300 font-bold bg-black/55 px-2 py-0.5 backdrop-blur-sm">8.5K views</span>
+                            </div>
+                        </div>
+                        <h3 class="dark:text-gray-50 text-gray-900 hover:text-bronze font-serif text-lg font-black">FOOD_REPORT_01</h3>
+                        <p class="text-xs dark:text-zinc-500 text-zinc-500 font-mono mt-1 opacity-70">RESTAURANT_REVIEW</p>
+                    </div>
+
+                    <!-- P3 -->
+                    <div class="min-w-[280px] sm:min-w-[400px] group cursor-pointer shrink-0" onclick="openPortfolio(2)">
+                        <div class="relative aspect-video mb-4 overflow-hidden border dark:border-white/10 border-black/10 rounded-sm group-hover:border-bronze/40 duration-500 shadow-lg">
+                            <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800&auto=format&fit=crop" alt="Hotel Review" loading="lazy" class="w-full h-full object-cover group-hover:scale-[1.08]">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#0D0D0C]/90 via-[#0D0D0C]/20 to-transparent"></div>
+                            <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+                                <span class="font-mono text-[10px] px-2.5 py-0.5 font-bold tracking-widest bg-bronze text-[#0D0D0C]">HOTEL</span>
+                                <span class="font-mono text-[10px] dark:text-zinc-400 text-zinc-300 font-bold bg-black/55 px-2 py-0.5 backdrop-blur-sm">15K views</span>
+                            </div>
+                        </div>
+                        <h3 class="dark:text-gray-50 text-gray-900 hover:text-bronze font-serif text-lg font-black">STAY_REVIEW_PRO</h3>
+                        <p class="text-xs dark:text-zinc-500 text-zinc-500 font-mono mt-1 opacity-70">HOTEL_REVIEW</p>
+                    </div>
+
+                    <!-- P4 -->
+                    <div class="min-w-[280px] sm:min-w-[400px] group cursor-pointer shrink-0" onclick="openPortfolio(3)">
+                        <div class="relative aspect-video mb-4 overflow-hidden border dark:border-white/10 border-black/10 rounded-sm group-hover:border-bronze/40 duration-500 shadow-lg">
+                            <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?q=80&w=800&auto=format&fit=crop" alt="Broker" loading="lazy" class="w-full h-full object-cover group-hover:scale-[1.08]">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#0D0D0C]/90 via-[#0D0D0C]/20 to-transparent"></div>
+                            <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+                                <span class="font-mono text-[10px] px-2.5 py-0.5 font-bold tracking-widest bg-bronze text-[#0D0D0C]">BROKER</span>
+                                <span class="font-mono text-[10px] dark:text-zinc-400 text-zinc-300 font-bold bg-black/55 px-2 py-0.5 backdrop-blur-sm">3K views</span>
+                            </div>
+                        </div>
+                        <h3 class="dark:text-gray-50 text-gray-900 hover:text-bronze font-serif text-lg font-black">DEAL_CLOSED_V1</h3>
+                        <p class="text-xs dark:text-zinc-500 text-zinc-500 font-mono mt-1 opacity-70">BROKER_SUCCESS</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════ PRICING ══════════════════════════ -->
+        <section id="pricing" class="py-24 px-5 md:px-20 border-b dark:border-white/[0.05] border-black/[0.05]">
+            <div class="max-w-[1440px] mx-auto">
+
+                <!-- Header -->
+                <div class="text-center mb-16 fade-up">
+                    <div class="font-mono text-[10px] tracking-[0.3em] text-bronze mb-4 font-bold">[ PRICING_PACKAGES ]</div>
+                    <h2 class="font-serif text-3xl sm:text-5xl font-black dark:text-gray-50 text-gray-900 tracking-tight mb-4">
+                        PACKAGES<span class="text-bronze">.02</span>
+                    </h2>
+                    <p class="dark:text-zinc-400 text-zinc-600 max-w-md mx-auto text-sm leading-relaxed">
+                        เลือกแพ็คเกจที่ตรงกับงานของคุณ หรือติดต่อเพื่อออกแบบแพ็คเกจเฉพาะ
+                    </p>
+                </div>
+
+                <!-- Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+
+                    <!-- STARTER -->
+                    <div class="fade-up glass-card p-8 rounded-sm border dark:border-white/[0.08] border-black/[0.08] card-glow flex flex-col">
+                        <div class="font-mono text-[9px] tracking-widest text-bronze/60 font-bold mb-5">PKG-01 // STARTER</div>
+                        <h3 class="font-serif text-2xl font-black dark:text-gray-50 text-gray-900 mb-1">รีวิวพื้นฐาน</h3>
+                        <p class="font-mono text-[10px] dark:text-zinc-500 text-zinc-500 mb-6 tracking-wider">สำหรับงานรีวิวเบื้องต้น</p>
+                        <div class="mb-6">
+                            <div class="font-serif text-2xl font-black text-bronze">ติดต่อสอบถาม</div>
+                            <div class="font-mono text-[9px] dark:text-zinc-600 text-zinc-500 tracking-wider mt-1">ราคาขึ้นอยู่กับประเภทงาน</div>
+                        </div>
+                        <ul class="space-y-3 mb-8 flex-1">
+                            <li class="flex items-start gap-2.5 text-sm dark:text-zinc-400 text-zinc-600"><i class="fa-solid fa-check text-bronze text-[10px] mt-1 shrink-0"></i>รีวิวข้อความ + ภาพถ่าย</li>
+                            <li class="flex items-start gap-2.5 text-sm dark:text-zinc-400 text-zinc-600"><i class="fa-solid fa-check text-bronze text-[10px] mt-1 shrink-0"></i>1 รีวิวต่อแพ็คเกจ</li>
+                            <li class="flex items-start gap-2.5 text-sm dark:text-zinc-400 text-zinc-600"><i class="fa-solid fa-check text-bronze text-[10px] mt-1 shrink-0"></i>ส่งงานภายใน 3–5 วัน</li>
+                            <li class="flex items-start gap-2.5 text-sm dark:text-zinc-400 text-zinc-600"><i class="fa-solid fa-check text-bronze text-[10px] mt-1 shrink-0"></i>แก้ไขได้ 1 ครั้ง</li>
+                        </ul>
+                        <button onclick="openContact('STARTER')" class="w-full border dark:border-[rgba(197,168,128,0.4)] border-[rgba(139,100,48,0.4)] dark:text-bronze text-bronze-dark py-3.5 font-mono text-xs font-bold tracking-widest rounded-sm dark:hover:bg-[rgba(197,168,128,0.07)] hover:bg-[rgba(197,168,128,0.07)]">
+                            เลือกแพ็คเกจนี้
+                        </button>
+                    </div>
+
+                    <!-- STANDARD (popular) -->
+                    <div class="fade-up d1 glass-card p-8 rounded-sm border pricing-popular flex flex-col relative">
+                        <div class="absolute -top-4 left-1/2 -translate-x-1/2">
+                            <span class="btn-bronze px-4 py-1 font-mono text-[10px] font-black tracking-widest rounded-sm shadow-lg">&#10022; แนะนำ</span>
+                        </div>
+                        <div class="font-mono text-[9px] tracking-widest text-bronze font-bold mb-5 mt-2">PKG-02 // STANDARD</div>
+                        <h3 class="font-serif text-2xl font-black dark:text-gray-50 text-gray-900 mb-1">รีวิวมาตรฐาน</h3>
+                        <p class="font-mono text-[10px] dark:text-zinc-500 text-zinc-500 mb-6 tracking-wider">สำหรับธุรกิจขนาดกลาง</p>
+                        <div class="mb-6">
+                            <div class="font-serif text-2xl font-black text-bronze">ติดต่อสอบถาม</div>
+                            <div class="font-mono text-[9px] dark:text-zinc-600 text-zinc-500 tracking-wider mt-1">ราคาขึ้นอยู่กับประเภทงาน</div>
+                        </div>
+                        <ul class="space-y-3 mb-8 flex-1">
+                            <li class="flex items-start gap-2.5 text-sm dark:text-zinc-400 text-zinc-600"><i class="fa-solid fa-check text-bronze text-[10px] mt-1 shrink-0"></i>ทุกอย่างใน Starter</li>
+                            <li class="flex items-start gap-2.5 text-sm dark:text-zinc-400 text-zinc-600"><i class="fa-solid fa-check text-bronze text-[10px] mt-1 shrink-0"></i>โพสต์ลงแพลตฟอร์มจริง</li>
+                            <li class="flex items-start gap-2.5 text-sm dark:text-zinc-400 text-zinc-600"><i class="fa-solid fa-check text-bronze text-[10px] mt-1 shrink-0"></i>รีวิวครบทุกมิติ</li>
+                            <li class="flex items-start gap-2.5 text-sm dark:text-zinc-400 text-zinc-600"><i class="fa-solid fa-check text-bronze text-[10px] mt-1 shrink-0"></i>ส่งงานภายใน 2–3 วัน</li>
+                            <li class="flex items-start gap-2.5 text-sm dark:text-zinc-400 text-zinc-600"><i class="fa-solid fa-check text-bronze text-[10px] mt-1 shrink-0"></i>แก้ไขได้ 2 ครั้ง</li>
+                        </ul>
+                        <button onclick="openContact('STANDARD')" class="w-full btn-bronze py-3.5 font-mono text-xs rounded-sm">
+                            เลือกแพ็คเกจนี้
+                        </button>
+                    </div>
+
+                    <!-- PREMIUM -->
+                    <div class="fade-up d2 glass-card p-8 rounded-sm border dark:border-white/[0.08] border-black/[0.08] card-glow flex flex-col">
+                        <div class="font-mono text-[9px] tracking-widest text-bronze/60 font-bold mb-5">PKG-03 // PREMIUM</div>
+                        <h3 class="font-serif text-2xl font-black dark:text-gray-50 text-gray-900 mb-1">รีวิวพรีเมียม</h3>
+                        <p class="font-mono text-[10px] dark:text-zinc-500 text-zinc-500 mb-6 tracking-wider">สำหรับแบรนด์ระดับพรีเมียม</p>
+                        <div class="mb-6">
+                            <div class="font-serif text-2xl font-black text-bronze">ติดต่อสอบถาม</div>
+                            <div class="font-mono text-[9px] dark:text-zinc-600 text-zinc-500 tracking-wider mt-1">ราคาขึ้นอยู่กับประเภทงาน</div>
+                        </div>
+                        <ul class="space-y-3 mb-8 flex-1">
+                            <li class="flex items-start gap-2.5 text-sm dark:text-zinc-400 text-zinc-600"><i class="fa-solid fa-check text-bronze text-[10px] mt-1 shrink-0"></i>ทุกอย่างใน Standard</li>
+                            <li class="flex items-start gap-2.5 text-sm dark:text-zinc-400 text-zinc-600"><i class="fa-solid fa-check text-bronze text-[10px] mt-1 shrink-0"></i>รีวิววิดีโอ (Reel / Short)</li>
+                            <li class="flex items-start gap-2.5 text-sm dark:text-zinc-400 text-zinc-600"><i class="fa-solid fa-check text-bronze text-[10px] mt-1 shrink-0"></i>โพสต์ครบทุกช่องทาง</li>
+                            <li class="flex items-start gap-2.5 text-sm dark:text-zinc-400 text-zinc-600"><i class="fa-solid fa-check text-bronze text-[10px] mt-1 shrink-0"></i>รายงานผลการรีวิว</li>
+                            <li class="flex items-start gap-2.5 text-sm dark:text-zinc-400 text-zinc-600"><i class="fa-solid fa-check text-bronze text-[10px] mt-1 shrink-0"></i>แก้ไขไม่จำกัด</li>
+                        </ul>
+                        <button onclick="openContact('PREMIUM')" class="w-full border dark:border-[rgba(197,168,128,0.4)] border-[rgba(139,100,48,0.4)] dark:text-bronze text-bronze-dark py-3.5 font-mono text-xs font-bold tracking-widest rounded-sm dark:hover:bg-[rgba(197,168,128,0.07)] hover:bg-[rgba(197,168,128,0.07)]">
+                            เลือกแพ็คเกจนี้
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Custom note -->
+                <div class="text-center mt-10 fade-up">
+                    <p class="font-mono text-xs dark:text-zinc-600 text-zinc-500 tracking-wider">
+                        ต้องการแพ็คเกจพิเศษ?
+                        <button onclick="openContact('CUSTOM')" class="text-bronze hover:underline ml-1">ออกแบบเฉพาะคุณ →</button>
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ══════════════════════════ CONTACT ══════════════════════════ -->
+        <section id="contact" class="py-24 px-5 border-b dark:border-white/[0.05] border-black/[0.05]">
+            <div class="max-w-[1440px] mx-auto">
+                <div class="glass-card max-w-5xl mx-auto p-8 md:p-14 border dark:border-[rgba(197,168,128,0.15)] border-[rgba(139,100,48,0.15)] rounded-sm fade-up">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+
+                        <!-- Left -->
+                        <div>
+                            <div class="font-mono text-[10px] tracking-[0.3em] text-bronze mb-4 font-bold">[ CONTACT_US ]</div>
+                            <h2 class="font-serif text-3xl sm:text-4xl font-black dark:text-gray-50 text-gray-900 tracking-tight mb-4 leading-snug">
+                                พร้อมรับงาน<br><span class="text-bronze-gradient italic">ทุกประเภท</span>
+                            </h2>
+                            <p class="dark:text-zinc-400 text-zinc-600 text-sm mb-8 leading-relaxed">
+                                ติดต่อเราเพื่อสอบถามรายละเอียด รับใบเสนอราคา<br>หรือเริ่มต้นทำงานร่วมกันได้ทันที
+                            </p>
+
+                            <div class="space-y-4">
+                                <a href="tel:0887888613" class="flex items-center gap-3 dark:text-zinc-300 text-zinc-700 hover:text-bronze group">
+                                    <div class="w-10 h-10 flex items-center justify-center border dark:border-white/[0.08] border-black/[0.08] rounded-sm bg-[rgba(197,168,128,0.08)] group-hover:border-bronze/40 shrink-0">
+                                        <i class="fa-solid fa-phone text-bronze text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-mono text-[9px] tracking-widest dark:text-zinc-500 text-zinc-500 mb-0.5">PHONE</div>
+                                        <div class="text-sm font-medium">088-788-8613</div>
+                                    </div>
+                                </a>
+
+                                <a href="mailto:p2w.interplus@gmail.com" class="flex items-center gap-3 dark:text-zinc-300 text-zinc-700 hover:text-bronze group">
+                                    <div class="w-10 h-10 flex items-center justify-center border dark:border-white/[0.08] border-black/[0.08] rounded-sm bg-[rgba(197,168,128,0.08)] group-hover:border-bronze/40 shrink-0">
+                                        <i class="fa-solid fa-envelope text-bronze text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-mono text-[9px] tracking-widest dark:text-zinc-500 text-zinc-500 mb-0.5">EMAIL</div>
+                                        <div class="text-sm font-medium">p2w.interplus@gmail.com</div>
+                                    </div>
+                                </a>
+
+                                <a href="https://lin.ee/QJax26d" target="_blank" rel="noopener" class="flex items-center gap-3 dark:text-zinc-300 text-zinc-700 hover:text-bronze group">
+                                    <div class="w-10 h-10 flex items-center justify-center border dark:border-white/[0.08] border-black/[0.08] rounded-sm bg-[rgba(197,168,128,0.08)] group-hover:border-bronze/40 shrink-0">
+                                        <i class="fa-brands fa-line text-bronze text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-mono text-[9px] tracking-widest dark:text-zinc-500 text-zinc-500 mb-0.5">LINE OA</div>
+                                        <div class="text-sm font-medium">@P2W INTERPLUS</div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Right: Form -->
+                        <div>
+                            <form id="contact-form" class="space-y-4">
+                                <div>
+                                    <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">ชื่อ-นามสกุล *</label>
+                                    <input type="text" id="f-name" required placeholder="กรอกชื่อของคุณ"
+                                        class="w-full dark:bg-white/[0.05] bg-black/[0.05] border dark:border-white/10 border-black/10 rounded-sm p-3.5 dark:text-gray-50 text-gray-900 text-sm placeholder:dark:text-zinc-600 placeholder:text-zinc-400">
+                                </div>
+                                <div>
+                                    <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">เบอร์โทร / อีเมล *</label>
+                                    <input type="text" id="f-contact" required placeholder="เบอร์โทรหรืออีเมลของคุณ"
+                                        class="w-full dark:bg-white/[0.05] bg-black/[0.05] border dark:border-white/10 border-black/10 rounded-sm p-3.5 dark:text-gray-50 text-gray-900 text-sm placeholder:dark:text-zinc-600 placeholder:text-zinc-400">
+                                </div>
+                                <div>
+                                    <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">ประเภทบริการ</label>
+                                    <select id="f-service"
+                                        class="w-full dark:bg-[#1a1a18] bg-white border dark:border-white/10 border-black/10 rounded-sm p-3.5 dark:text-gray-50 text-gray-900 text-sm">
+                                        <option value="">เลือกบริการ</option>
+                                        <option value="รับรีวิวสินค้า">รับรีวิวสินค้า</option>
+                                        <option value="รีวิวทั่วไป">รีวิวทั่วไป</option>
+                                        <option value="นายหน้าทั่วไป">นายหน้าทั่วไป</option>
+                                        <option value="แพ็คเกจ Starter">แพ็คเกจ Starter</option>
+                                        <option value="แพ็คเกจ Standard">แพ็คเกจ Standard</option>
+                                        <option value="แพ็คเกจ Premium">แพ็คเกจ Premium</option>
+                                        <option value="อื่นๆ">อื่นๆ / สอบถามทั่วไป</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">รายละเอียดงาน</label>
+                                    <textarea id="f-message" rows="4" placeholder="อธิบายงานที่ต้องการ..."
+                                        class="w-full dark:bg-white/[0.05] bg-black/[0.05] border dark:border-white/10 border-black/10 rounded-sm p-3.5 dark:text-gray-50 text-gray-900 text-sm resize-none placeholder:dark:text-zinc-600 placeholder:text-zinc-400"></textarea>
+                                </div>
+                                <button type="submit" id="submit-btn" class="w-full btn-bronze py-4 font-mono text-xs rounded-sm flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-paper-plane"></i> ส่งข้อความ
+                                </button>
+                                <div id="form-success" class="hidden text-center py-3 border border-bronze/40 bg-[rgba(197,168,128,0.07)] rounded-sm">
+                                    <p class="font-mono text-xs text-bronze font-bold tracking-wider"><i class="fa-solid fa-circle-check mr-2"></i>ส่งสำเร็จ! เราจะติดต่อกลับเร็วๆ นี้</p>
+                                </div>
+                                <div id="form-error" class="hidden text-center py-3 border border-red-500/40 bg-red-500/[0.07] rounded-sm">
+                                    <p class="font-mono text-xs text-red-400 font-bold tracking-wider"><i class="fa-solid fa-circle-exclamation mr-2"></i>เกิดข้อผิดพลาด กรุณาลองใหม่</p>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ░░ FOOTER ░░ -->
+    <footer class="dark:bg-[#0D0D0C] bg-[#F9F8F6] border-t dark:border-white/[0.05] border-black/[0.05] relative z-10">
+        <div class="max-w-[1440px] mx-auto px-5 md:px-20 py-12 pb-32 md:pb-12">
+            <div class="flex flex-col md:flex-row justify-between items-start gap-10">
+
+                <!-- Brand -->
+                <div>
+                    <div class="font-serif text-xl dark:text-gray-50 text-gray-900 font-black tracking-tight mb-1">P2W INTERPLUS</div>
+                    <div class="font-mono text-[10px] text-bronze tracking-widest uppercase font-bold mb-4">REVIEW &amp; BROKER SERVICE</div>
+                    <div class="font-mono text-[10px] dark:text-zinc-600 text-zinc-500 tracking-wider">©2026 P2W INTERPLUS CO.,LTD.</div>
+                    <div class="font-mono text-[10px] dark:text-zinc-600 text-zinc-500 tracking-wider mt-1">ALL RIGHTS RESERVED</div>
+                </div>
+
+                <!-- Nav links -->
+                <div class="grid grid-cols-2 gap-x-12 gap-y-3">
+                    <button onclick="scrollTo('services')"  class="font-mono text-xs font-bold tracking-widest dark:text-zinc-500 text-zinc-500 hover:text-bronze text-left uppercase">Services</button>
+                    <button onclick="scrollTo('portfolio')" class="font-mono text-xs font-bold tracking-widest dark:text-zinc-500 text-zinc-500 hover:text-bronze text-left uppercase">Portfolio</button>
+                    <button onclick="scrollTo('pricing')"   class="font-mono text-xs font-bold tracking-widest dark:text-zinc-500 text-zinc-500 hover:text-bronze text-left uppercase">Pricing</button>
+                    <button onclick="scrollTo('contact')"   class="font-mono text-xs font-bold tracking-widest dark:text-zinc-500 text-zinc-500 hover:text-bronze text-left uppercase">Contact</button>
+                    <a href="/"                             class="font-mono text-xs font-bold tracking-widest dark:text-zinc-500 text-zinc-500 hover:text-bronze text-left uppercase">Main Hub</a>
+                </div>
+
+                <!-- Contact quick -->
+                <div class="space-y-3">
+                    <a href="tel:0887888613"                class="flex items-center gap-2 dark:text-zinc-400 text-zinc-600 hover:text-bronze font-mono text-xs"><i class="fa-solid fa-phone text-bronze w-3.5"></i> 088-788-8613</a>
+                    <a href="mailto:p2w.interplus@gmail.com" class="flex items-center gap-2 dark:text-zinc-400 text-zinc-600 hover:text-bronze font-mono text-xs"><i class="fa-solid fa-envelope text-bronze w-3.5"></i> p2w.interplus@gmail.com</a>
+                    <a href="https://lin.ee/QJax26d" target="_blank" rel="noopener" class="flex items-center gap-2 dark:text-zinc-400 text-zinc-600 hover:text-bronze font-mono text-xs"><i class="fa-brands fa-line text-bronze w-3.5"></i> Line OA</a>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+    <!-- ░░ MOBILE BOTTOM NAV ░░ -->
+    <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 md:hidden dark:bg-[#0D0D0C]/92 bg-[#F9F8F6]/92 backdrop-blur-xl border-t dark:border-white/[0.08] border-black/[0.08] rounded-t-2xl shadow-[0_-4px_24px_rgba(197,168,128,0.12)]">
+        <button onclick="scrollTo('hero')"      class="mobile-nav flex flex-col items-center gap-1.5 dark:text-zinc-500 text-zinc-500 hover:text-bronze active:scale-95" data-sec="hero">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span class="font-mono text-[8px] tracking-widest font-bold">HOME</span>
+        </button>
+        <button onclick="scrollTo('services')"  class="mobile-nav flex flex-col items-center gap-1.5 dark:text-zinc-500 text-zinc-500 hover:text-bronze active:scale-95" data-sec="services">
+            <i class="fa-solid fa-star text-lg"></i>
+            <span class="font-mono text-[8px] tracking-widest font-bold">SERVICES</span>
+        </button>
+        <button onclick="openContact()"         class="flex flex-col items-center gap-1.5 active:scale-95">
+            <div class="w-12 h-12 btn-bronze rounded-xl flex items-center justify-center -mt-6 shadow-xl">
+                <i class="fa-solid fa-paper-plane text-base"></i>
+            </div>
+            <span class="font-mono text-[8px] tracking-widest font-bold dark:text-zinc-500 text-zinc-500">ติดต่อ</span>
+        </button>
+        <button onclick="scrollTo('portfolio')" class="mobile-nav flex flex-col items-center gap-1.5 dark:text-zinc-500 text-zinc-500 hover:text-bronze active:scale-95" data-sec="portfolio">
+            <i class="fa-solid fa-folder-open text-lg"></i>
+            <span class="font-mono text-[8px] tracking-widest font-bold">PORTFOLIO</span>
+        </button>
+        <button onclick="scrollTo('pricing')"   class="mobile-nav flex flex-col items-center gap-1.5 dark:text-zinc-500 text-zinc-500 hover:text-bronze active:scale-95" data-sec="pricing">
+            <i class="fa-solid fa-tag text-lg"></i>
+            <span class="font-mono text-[8px] tracking-widest font-bold">PRICING</span>
+        </button>
+    </nav>
+
+    <!-- ░░ PORTFOLIO MODAL ░░ -->
+    <div id="portfolio-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="absolute inset-0 dark:bg-[#0D0D0C]/92 bg-[#F9F8F6]/92 backdrop-blur-md" onclick="closePortfolio()"></div>
+        <div class="relative w-full max-w-3xl glass-card border dark:border-[rgba(197,168,128,0.2)] border-[rgba(139,100,48,0.2)] rounded-sm overflow-hidden my-8 z-10 shadow-2xl">
+            <button onclick="closePortfolio()" class="absolute top-4 right-4 p-2 dark:bg-black/50 bg-white/70 rounded-full dark:text-zinc-400 text-zinc-600 hover:text-bronze backdrop-blur-sm z-20">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="relative h-60 sm:h-80">
+                <img id="m-img" src="" alt="" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#0D0D0C] via-transparent to-transparent"></div>
+            </div>
+            <div class="p-8 relative -mt-16 z-10">
+                <div id="m-badge" class="inline-block font-mono text-[10px] px-2.5 py-0.5 font-bold tracking-widest bg-bronze text-[#0D0D0C] mb-4"></div>
+                <h2 id="m-title"    class="font-serif text-4xl font-black dark:text-gray-50 text-gray-900 mb-1 tracking-tight"></h2>
+                <p  id="m-category" class="font-mono text-[10px] text-bronze tracking-widest font-bold mb-4"></p>
+                <p  id="m-desc"     class="dark:text-zinc-300 text-zinc-700 text-sm leading-relaxed mb-8"></p>
+                <button onclick="closePortfolio(); openContact()" class="w-full sm:w-auto px-10 border border-bronze/40 dark:text-bronze text-bronze-dark py-3.5 font-bold tracking-widest text-xs rounded-sm dark:hover:bg-[rgba(197,168,128,0.07)] hover:bg-[rgba(197,168,128,0.07)] font-mono">
+                    ต้องการงานแบบนี้ →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ░░ TOAST CONTAINER ░░ -->
+    <div id="toasts" class="fixed bottom-28 md:bottom-6 right-5 z-[200] flex flex-col gap-2 max-w-xs pointer-events-none"></div>
+
+    <!-- ░░ SCRIPTS ░░ -->
+    <script>
+    // ──────────────────────────────────────────────────────────
+    // PORTFOLIO DATA
+    // ──────────────────────────────────────────────────────────
+    const PORT = [
+        { badge:'TECH',   title:'TECH_REVIEW_X1',   cat:'PRODUCT_REVIEW',     img:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop', desc:'รีวิวสมาร์ทวอทช์รุ่นใหม่ล่าสุด ทดสอบฟีเจอร์ครบทุกด้านตั้งแต่การติดตามสุขภาพ การแจ้งเตือน ไปจนถึงความทนทานของแบตเตอรี่ พร้อมภาพถ่ายจริงและคะแนนรีวิวในแต่ละด้าน' },
+        { badge:'FOOD',   title:'FOOD_REPORT_01',   cat:'RESTAURANT_REVIEW',  img:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=800&auto=format&fit=crop', desc:'รีวิวร้านอาหาร Fine Dining กลางกรุงเทพฯ ครอบคลุมทั้งรสชาติ การบริการ บรรยากาศ และความคุ้มค่า พร้อมคะแนนแต่ละด้านและข้อแนะนำ' },
+        { badge:'HOTEL',  title:'STAY_REVIEW_PRO',  cat:'HOTEL_REVIEW',       img:'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800&auto=format&fit=crop', desc:'รีวิวโรงแรมหรูระดับ 5 ดาว ทดสอบทุกสิ่งอำนวยความสะดวกตั้งแต่เช็คอินจนเช็คเอาท์ พร้อมภาพถ่ายห้องพักจริงและเปรียบเทียบราคากับมาตรฐาน' },
+        { badge:'BROKER', title:'DEAL_CLOSED_V1',   cat:'BROKER_SUCCESS',     img:'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?q=80&w=800&auto=format&fit=crop', desc:'กรณีศึกษา: เชื่อมโยงผู้ซื้อ-ผู้ขายสินค้าอุตสาหกรรมสำเร็จ ปิดดีลมูลค่า 6 หลักภายในไม่ถึง 2 สัปดาห์ ด้วยการเจรจาและเครือข่ายที่แข็งแกร่ง' },
+    ];
+
+    // ──────────────────────────────────────────────────────────
+    // THEME
+    // ──────────────────────────────────────────────────────────
+    (function initTheme() {
+        const t = localStorage.getItem('p2w-review-theme') || 'dark';
+        applyTheme(t);
+    })();
+
+    function applyTheme(t) {
+        const html = document.documentElement;
+        const sun  = document.getElementById('icon-sun');
+        const moon = document.getElementById('icon-moon');
+        const grid = document.getElementById('bg-grid');
+        if (t === 'dark') {
+            html.classList.add('dark');
+            sun.classList.add('hidden');
+            moon.classList.remove('hidden');
+            grid.classList.add('grid-pattern');
+            grid.classList.remove('light-grid');
+        } else {
+            html.classList.remove('dark');
+            moon.classList.add('hidden');
+            sun.classList.remove('hidden');
+            grid.classList.remove('grid-pattern');
+            grid.classList.add('light-grid');
+        }
+        localStorage.setItem('p2w-review-theme', t);
+    }
+
+    document.getElementById('theme-toggle').addEventListener('click', function() {
+        const isDark = document.documentElement.classList.contains('dark');
+        applyTheme(isDark ? 'light' : 'dark');
+    });
+
+    // ──────────────────────────────────────────────────────────
+    // SCROLL NAV
+    // ──────────────────────────────────────────────────────────
+    const SECS = ['hero','services','portfolio','pricing','contact'];
+
+    function scrollTo(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const offset = id === 'hero' ? 80 : 96;
+        window.scrollTo({ top: el.offsetTop - offset, behavior: 'smooth' });
+    }
+
+    function updateNav() {
+        const y = window.scrollY + 220;
+        let cur = 'hero';
+        SECS.forEach(id => {
+            const el = document.getElementById(id);
+            if (el && y >= el.offsetTop) cur = id;
+        });
+        document.querySelectorAll('.nav-btn').forEach(b => {
+            const active = b.dataset.sec === cur;
+            b.classList.toggle('active', active);
+            b.style.color = active ? '#C5A880' : '';
+        });
+        document.querySelectorAll('.mobile-nav').forEach(b => {
+            b.style.color = b.dataset.sec === cur ? '#C5A880' : '';
+        });
+    }
+
+    window.addEventListener('scroll', updateNav, { passive: true });
+    updateNav();
+
+    // ──────────────────────────────────────────────────────────
+    // FADE-UP (Intersection Observer)
+    // ──────────────────────────────────────────────────────────
+    const io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+
+    // ──────────────────────────────────────────────────────────
+    // OPEN CONTACT (pre-select package + scroll)
+    // ──────────────────────────────────────────────────────────
+    function openContact(pkg) {
+        if (pkg) {
+            const sel = document.getElementById('f-service');
+            const map = { STARTER:'แพ็คเกจ Starter', STANDARD:'แพ็คเกจ Standard', PREMIUM:'แพ็คเกจ Premium', CUSTOM:'อื่นๆ' };
+            if (sel && map[pkg]) sel.value = map[pkg];
+        }
+        scrollTo('contact');
+        setTimeout(() => { const n = document.getElementById('f-name'); if (n) n.focus(); }, 650);
+    }
+
+    // ──────────────────────────────────────────────────────────
+    // FORM SUBMIT (Web3Forms)
+    // ──────────────────────────────────────────────────────────
+    document.getElementById('contact-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const btn  = document.getElementById('submit-btn');
+        const succ = document.getElementById('form-success');
+        const err  = document.getElementById('form-error');
+
+        succ.classList.add('hidden');
+        err.classList.add('hidden');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> กำลังส่ง...';
+
+        try {
+            const fd = new FormData();
+            fd.append('access_key',  'c5363896-f578-4dd8-ad46-f481f5514982');
+            fd.append('subject',     'P2W Review — ติดต่อรับงาน');
+            fd.append('from_name',   'P2W Review Website');
+            fd.append('name',        document.getElementById('f-name').value);
+            fd.append('contact',     document.getElementById('f-contact').value);
+            fd.append('service',     document.getElementById('f-service').value);
+            fd.append('message',     document.getElementById('f-message').value);
+
+            const res  = await fetch('https://api.web3forms.com/submit', { method:'POST', body: fd });
+            const json = await res.json();
+
+            if (json.success) {
+                succ.classList.remove('hidden');
+                this.reset();
+                toast('ส่งข้อความสำเร็จ! เราจะติดต่อกลับเร็วๆ นี้', 'success');
+            } else throw new Error('failed');
+        } catch {
+            err.classList.remove('hidden');
+            toast('เกิดข้อผิดพลาด กรุณาลองใหม่', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> ส่งข้อความ';
+        }
+    });
+
+    // ──────────────────────────────────────────────────────────
+    // PORTFOLIO MODAL
+    // ──────────────────────────────────────────────────────────
+    function openPortfolio(i) {
+        const d = PORT[i];
+        document.getElementById('m-img').src      = d.img;
+        document.getElementById('m-img').alt      = d.title;
+        document.getElementById('m-badge').textContent    = d.badge;
+        document.getElementById('m-title').textContent    = d.title;
+        document.getElementById('m-category').textContent = d.cat;
+        document.getElementById('m-desc').textContent     = d.desc;
+        const modal = document.getElementById('portfolio-modal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closePortfolio() {
+        const modal = document.getElementById('portfolio-modal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closePortfolio(); });
+
+    // ──────────────────────────────────────────────────────────
+    // TOAST
+    // ──────────────────────────────────────────────────────────
+    function toast(msg, type = 'success') {
+        const c = document.getElementById('toasts');
+        const el = document.createElement('div');
+        const styles = {
+            success: 'border-[rgba(197,168,128,0.35)] dark:bg-[#0D0D0C]/90 bg-[#F9F8F6]/90 text-bronze',
+            error:   'border-red-500/30 dark:bg-red-950/80 bg-red-50/80 text-red-400',
+            info:    'border-blue-500/30 dark:bg-blue-950/80 bg-blue-50/80 text-blue-400',
+        }[type] || '';
+        el.className = `toast pointer-events-auto p-3.5 rounded-sm border shadow-lg flex items-center gap-2.5 backdrop-blur-md ${styles}`;
+        el.innerHTML = `<i class="fa-solid fa-${type==='success'?'circle-check':type==='error'?'circle-exclamation':'circle-info'} shrink-0"></i><span class="font-mono text-xs font-bold leading-snug">${msg}</span>`;
+        c.appendChild(el);
+        setTimeout(() => {
+            el.classList.add('out');
+            setTimeout(() => el.remove(), 320);
+        }, 4000);
+    }
+
+    // ──────────────────────────────────────────────────────────
+    // VISITOR TRACKER
+    // ──────────────────────────────────────────────────────────
+    (async function track() {
+        try {
+            const ip = await fetch('https://ipapi.co/json/').then(r => r.json());
+            await fetch('https://script.google.com/macros/s/AKfycbz6ya72gdmELmCECrO28zACTdoVLcchVJXOoluHpjPTKsZnCRmYkRk5B74vvD57jHLB/exec', {
+                method: 'POST', mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    page:     'review',
+                    ip:       ip.ip       || '',
+                    country:  ip.country_name || '',
+                    city:     ip.city     || '',
+                    isp:      ip.org      || '',
+                    device:   /Mobile|Android|iPhone/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
+                    browser:  navigator.userAgent.split(' ').pop().split('/')[0],
+                    os:       navigator.platform,
+                    referrer: document.referrer || 'direct',
+                    isBot:    /bot|crawler|spider/i.test(navigator.userAgent) ? 'bot' : 'human',
+                    time:     new Date().toLocaleString('th-TH', { timeZone: 'Asia/Bangkok' }),
+                })
+            });
+        } catch { /* silent */ }
+    })();
+    </script>
+
+</body>
+</html>
