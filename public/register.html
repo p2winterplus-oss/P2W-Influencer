@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P2W INTERPLUS | สมัครสมาชิก Creator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: {
+                colors: { bronze: '#C5A880', 'bronze-dark': '#8B6430' },
+                fontFamily: { serif: ['"Playfair Display"','serif'], sans: ['"Prompt"','sans-serif'] }
+            }}
+        }
+    </script>
+    <style>
+        body { font-family:'Prompt',sans-serif; }
+        .dark body { background:#0D0D0C; color:#e4e4e7; }
+        body { background:#F9F8F6; color:#27272a; }
+        .grid-bg {
+            background-image: linear-gradient(rgba(197,168,128,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(197,168,128,.05) 1px,transparent 1px);
+            background-size: 32px 32px;
+        }
+        .glass { background:rgba(13,13,12,.78); backdrop-filter:blur(14px); }
+        :not(.dark) .glass { background:rgba(255,255,255,.82); }
+        input:focus,select:focus,textarea:focus { border-color:#C5A880!important; outline:none; }
+        .cb-item input:checked + label { border-color:#C5A880; color:#C5A880; background:rgba(197,168,128,.1); }
+        .btn-bronze { background:#C5A880; color:#0D0D0C; font-weight:700; letter-spacing:.12em; transition:all .3s; }
+        .btn-bronze:hover { box-shadow:0 0 24px rgba(197,168,128,.5); transform:scale(1.02); }
+        .btn-bronze:disabled { opacity:.5; transform:none; box-shadow:none; cursor:not-allowed; }
+    </style>
+</head>
+<body class="min-h-screen relative">
+
+<div class="fixed inset-0 z-0 pointer-events-none">
+    <div class="absolute inset-0 dark:bg-[#0D0D0C] bg-[#F9F8F6]"></div>
+    <div class="absolute inset-0 grid-bg opacity-60"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(197,168,128,.06),transparent)]"></div>
+</div>
+
+<!-- Header -->
+<header class="fixed top-0 w-full z-50 dark:bg-[#0D0D0C]/88 bg-[#F9F8F6]/88 backdrop-blur-md border-b dark:border-white/[.07] border-black/[.07]">
+    <div class="flex justify-between items-center max-w-5xl mx-auto px-5 h-16">
+        <a href="/" class="flex items-center gap-2.5">
+            <img src="logo.png" alt="P2W" class="h-8 w-auto" onerror="this.style.display='none'">
+            <div>
+                <div class="font-serif text-sm font-black text-bronze leading-tight">P2W INTERPLUS</div>
+                <div class="font-mono text-[8px] tracking-widest text-bronze/50 uppercase">REVIEW & BROKER</div>
+            </div>
+        </a>
+        <div class="flex items-center gap-3">
+            <a href="/jobs.html" class="font-mono text-[11px] tracking-wider dark:text-zinc-400 text-zinc-600 hover:text-bronze">
+                <i class="fa-solid fa-briefcase mr-1.5"></i>ดูงาน
+            </a>
+            <button id="theme-toggle" class="w-8 h-8 flex items-center justify-center border dark:border-white/[.08] border-black/[.08] rounded-sm dark:text-zinc-400 text-zinc-600 hover:text-bronze">
+                <i class="fa-solid fa-sun hidden" id="icon-sun"></i>
+                <i class="fa-solid fa-moon" id="icon-moon"></i>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- Main -->
+<main class="relative z-10 pt-24 pb-16 px-5">
+    <div class="max-w-2xl mx-auto">
+
+        <!-- Title -->
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center gap-2 border border-bronze/40 px-4 py-1.5 mb-6 bg-[rgba(197,168,128,.07)] rounded-sm">
+                <span class="w-1.5 h-1.5 rounded-full bg-bronze animate-pulse inline-block"></span>
+                <span class="font-mono text-[10px] tracking-[.3em] font-bold text-bronze">CREATOR_REGISTER</span>
+            </div>
+            <h1 class="font-serif text-4xl font-black dark:text-gray-50 text-gray-900 mb-3">สมัครสมาชิก</h1>
+            <p class="dark:text-zinc-400 text-zinc-600 text-sm leading-relaxed">
+                กรอกข้อมูลให้ครบ P2W จะอนุมัติและแจ้งกลับภายใน 24 ชม.
+            </p>
+        </div>
+
+        <!-- Form -->
+        <div class="glass border dark:border-white/[.08] border-black/[.08] rounded-sm p-8">
+            <form id="reg-form" class="space-y-5">
+
+                <!-- ข้อมูลส่วนตัว -->
+                <div class="font-mono text-[10px] tracking-[.25em] text-bronze font-bold mb-1">[ ข้อมูลส่วนตัว ]</div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">ชื่อ-นามสกุล *</label>
+                        <input type="text" id="r-name" required placeholder="ชื่อจริงของคุณ"
+                            class="w-full dark:bg-white/[.05] bg-black/[.05] border dark:border-white/10 border-black/10 rounded-sm p-3 dark:text-gray-50 text-gray-900 text-sm placeholder:dark:text-zinc-600 placeholder:text-zinc-400">
+                    </div>
+                    <div>
+                        <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">เบอร์โทร</label>
+                        <input type="tel" id="r-phone" placeholder="08X-XXX-XXXX"
+                            class="w-full dark:bg-white/[.05] bg-black/[.05] border dark:border-white/10 border-black/10 rounded-sm p-3 dark:text-gray-50 text-gray-900 text-sm placeholder:dark:text-zinc-600 placeholder:text-zinc-400">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">อีเมล *</label>
+                    <input type="email" id="r-email" required placeholder="your@email.com"
+                        class="w-full dark:bg-white/[.05] bg-black/[.05] border dark:border-white/10 border-black/10 rounded-sm p-3 dark:text-gray-50 text-gray-900 text-sm placeholder:dark:text-zinc-600 placeholder:text-zinc-400">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">รหัสผ่าน *</label>
+                        <input type="password" id="r-pass" required placeholder="อย่างน้อย 8 ตัวอักษร"
+                            class="w-full dark:bg-white/[.05] bg-black/[.05] border dark:border-white/10 border-black/10 rounded-sm p-3 dark:text-gray-50 text-gray-900 text-sm placeholder:dark:text-zinc-600 placeholder:text-zinc-400">
+                    </div>
+                    <div>
+                        <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">ยืนยันรหัสผ่าน *</label>
+                        <input type="password" id="r-pass2" required placeholder="พิมพ์รหัสผ่านอีกครั้ง"
+                            class="w-full dark:bg-white/[.05] bg-black/[.05] border dark:border-white/10 border-black/10 rounded-sm p-3 dark:text-gray-50 text-gray-900 text-sm placeholder:dark:text-zinc-600 placeholder:text-zinc-400">
+                    </div>
+                </div>
+
+                <!-- ข้อมูล Creator -->
+                <div class="border-t dark:border-white/[.06] border-black/[.06] pt-5 mt-2">
+                    <div class="font-mono text-[10px] tracking-[.25em] text-bronze font-bold mb-4">[ ข้อมูล Creator ]</div>
+                </div>
+
+                <!-- แพลตฟอร์ม -->
+                <div>
+                    <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-3 block">แพลตฟอร์มที่ใช้</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        <div class="cb-item">
+                            <input type="checkbox" id="p-ig" value="instagram" class="hidden">
+                            <label for="p-ig" class="flex items-center gap-2 cursor-pointer border dark:border-white/10 border-black/10 rounded-sm px-3 py-2 font-mono text-xs dark:text-zinc-400 text-zinc-600 hover:border-bronze/40 transition-all">
+                                <i class="fa-brands fa-instagram text-base"></i> Instagram
+                            </label>
+                        </div>
+                        <div class="cb-item">
+                            <input type="checkbox" id="p-tt" value="tiktok" class="hidden">
+                            <label for="p-tt" class="flex items-center gap-2 cursor-pointer border dark:border-white/10 border-black/10 rounded-sm px-3 py-2 font-mono text-xs dark:text-zinc-400 text-zinc-600 hover:border-bronze/40 transition-all">
+                                <i class="fa-brands fa-tiktok text-base"></i> TikTok
+                            </label>
+                        </div>
+                        <div class="cb-item">
+                            <input type="checkbox" id="p-yt" value="youtube" class="hidden">
+                            <label for="p-yt" class="flex items-center gap-2 cursor-pointer border dark:border-white/10 border-black/10 rounded-sm px-3 py-2 font-mono text-xs dark:text-zinc-400 text-zinc-600 hover:border-bronze/40 transition-all">
+                                <i class="fa-brands fa-youtube text-base"></i> YouTube
+                            </label>
+                        </div>
+                        <div class="cb-item">
+                            <input type="checkbox" id="p-fb" value="facebook" class="hidden">
+                            <label for="p-fb" class="flex items-center gap-2 cursor-pointer border dark:border-white/10 border-black/10 rounded-sm px-3 py-2 font-mono text-xs dark:text-zinc-400 text-zinc-600 hover:border-bronze/40 transition-all">
+                                <i class="fa-brands fa-facebook text-base"></i> Facebook
+                            </label>
+                        </div>
+                        <div class="cb-item">
+                            <input type="checkbox" id="p-tw" value="twitter" class="hidden">
+                            <label for="p-tw" class="flex items-center gap-2 cursor-pointer border dark:border-white/10 border-black/10 rounded-sm px-3 py-2 font-mono text-xs dark:text-zinc-400 text-zinc-600 hover:border-bronze/40 transition-all">
+                                <i class="fa-brands fa-x-twitter text-base"></i> X/Twitter
+                            </label>
+                        </div>
+                        <div class="cb-item">
+                            <input type="checkbox" id="p-ln" value="lemon8" class="hidden">
+                            <label for="p-ln" class="flex items-center gap-2 cursor-pointer border dark:border-white/10 border-black/10 rounded-sm px-3 py-2 font-mono text-xs dark:text-zinc-400 text-zinc-600 hover:border-bronze/40 transition-all">
+                                <i class="fa-solid fa-lemon text-base"></i> Lemon8
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">จำนวน Followers (รวม)</label>
+                        <select id="r-followers" class="w-full dark:bg-[#1a1a18] bg-white border dark:border-white/10 border-black/10 rounded-sm p-3 dark:text-gray-50 text-gray-900 text-sm">
+                            <option value="">เลือกช่วง</option>
+                            <option value="< 1K">น้อยกว่า 1K</option>
+                            <option value="1K-5K">1K – 5K</option>
+                            <option value="5K-10K">5K – 10K</option>
+                            <option value="10K-50K">10K – 50K</option>
+                            <option value="50K-100K">50K – 100K</option>
+                            <option value="100K-500K">100K – 500K</option>
+                            <option value="> 500K">มากกว่า 500K</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">หมวดหมู่หลัก</label>
+                        <select id="r-category" class="w-full dark:bg-[#1a1a18] bg-white border dark:border-white/10 border-black/10 rounded-sm p-3 dark:text-gray-50 text-gray-900 text-sm">
+                            <option value="">เลือกหมวดหมู่</option>
+                            <option value="food">อาหาร / ร้านอาหาร</option>
+                            <option value="tech">เทคโนโลยี / Gadget</option>
+                            <option value="beauty">ความงาม / สกินแคร์</option>
+                            <option value="lifestyle">ไลฟ์สไตล์</option>
+                            <option value="travel">ท่องเที่ยว</option>
+                            <option value="fashion">แฟชั่น</option>
+                            <option value="gaming">เกม</option>
+                            <option value="fitness">สุขภาพ / ฟิตเนส</option>
+                            <option value="auto">รถยนต์</option>
+                            <option value="other">อื่นๆ</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" id="reg-btn" class="btn-bronze w-full py-4 font-mono text-xs rounded-sm mt-2 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-user-plus"></i> ส่งใบสมัคร
+                </button>
+
+                <div id="reg-success" class="hidden text-center py-3 border border-bronze/40 bg-[rgba(197,168,128,.07)] rounded-sm">
+                    <p class="font-mono text-xs text-bronze font-bold"><i class="fa-solid fa-circle-check mr-2"></i>ส่งใบสมัครสำเร็จ! รอ P2W อนุมัติภายใน 24 ชม.</p>
+                </div>
+                <div id="reg-error" class="hidden text-center py-3 border border-red-500/40 bg-red-500/[.07] rounded-sm">
+                    <p id="reg-error-msg" class="font-mono text-xs text-red-400 font-bold"></p>
+                </div>
+
+                <p class="text-center font-mono text-[11px] dark:text-zinc-500 text-zinc-500 mt-2">
+                    มีบัญชีแล้ว? <a href="/jobs.html" class="text-bronze hover:underline">เข้าสู่ระบบ →</a>
+                </p>
+            </form>
+        </div>
+    </div>
+</main>
+
+<script>
+// Theme
+(function(){ const t=localStorage.getItem('p2w-review-theme')||'dark'; applyTheme(t); })();
+function applyTheme(t){
+    document.documentElement.classList.toggle('dark', t==='dark');
+    document.getElementById('icon-sun').classList.toggle('hidden', t==='dark');
+    document.getElementById('icon-moon').classList.toggle('hidden', t!=='dark');
+    localStorage.setItem('p2w-review-theme',t);
+}
+document.getElementById('theme-toggle').onclick=()=>applyTheme(document.documentElement.classList.contains('dark')?'light':'dark');
+
+// Checkbox platforms
+document.querySelectorAll('.cb-item input[type=checkbox]').forEach(cb=>{
+    cb.addEventListener('change', ()=>{
+        cb.nextElementSibling.style.borderColor = cb.checked ? '#C5A880' : '';
+        cb.nextElementSibling.style.color = cb.checked ? '#C5A880' : '';
+        cb.nextElementSibling.style.background = cb.checked ? 'rgba(197,168,128,0.1)' : '';
+    });
+});
+
+// Submit
+document.getElementById('reg-form').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const btn = document.getElementById('reg-btn');
+    const errEl = document.getElementById('reg-error');
+    const errMsg = document.getElementById('reg-error-msg');
+    const succEl = document.getElementById('reg-success');
+
+    errEl.classList.add('hidden');
+    succEl.classList.add('hidden');
+
+    const pass = document.getElementById('r-pass').value;
+    const pass2 = document.getElementById('r-pass2').value;
+    if(pass !== pass2){ errMsg.textContent='รหัสผ่านไม่ตรงกัน'; errEl.classList.remove('hidden'); return; }
+    if(pass.length < 8){ errMsg.textContent='รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร'; errEl.classList.remove('hidden'); return; }
+
+    const platforms = [...document.querySelectorAll('.cb-item input:checked')].map(c=>c.value);
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> กำลังส่ง...';
+
+    try {
+        const res = await fetch('/api/auth/register', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({
+                name:     document.getElementById('r-name').value,
+                email:    document.getElementById('r-email').value,
+                phone:    document.getElementById('r-phone').value,
+                password: pass,
+                platforms,
+                followers: document.getElementById('r-followers').value,
+                category:  document.getElementById('r-category').value,
+            })
+        });
+        const json = await res.json();
+        if(res.ok){
+            succEl.classList.remove('hidden');
+            this.reset();
+            document.querySelectorAll('.cb-item label').forEach(l=>{ l.style.borderColor=''; l.style.color=''; l.style.background=''; });
+        } else {
+            errMsg.textContent = json.error || 'เกิดข้อผิดพลาด';
+            errEl.classList.remove('hidden');
+        }
+    } catch {
+        errMsg.textContent = 'เชื่อมต่อ server ไม่ได้ กรุณาลองใหม่';
+        errEl.classList.remove('hidden');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> ส่งใบสมัคร';
+    }
+});
+</script>
+</body>
+</html>

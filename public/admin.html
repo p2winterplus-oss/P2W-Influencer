@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P2W ADMIN | จัดการระบบ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode:'class',
+            theme:{ extend:{
+                colors:{ bronze:'#C5A880','bronze-dark':'#8B6430' },
+                fontFamily:{ serif:['"Playfair Display"','serif'], sans:['"Prompt"','sans-serif'] }
+            }}
+        }
+    </script>
+    <style>
+        body { font-family:'Prompt',sans-serif; }
+        .dark body { background:#0D0D0C; color:#e4e4e7; }
+        body { background:#F9F8F6; color:#27272a; }
+        .grid-bg { background-image:linear-gradient(rgba(197,168,128,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(197,168,128,.04) 1px,transparent 1px); background-size:32px 32px; }
+        .glass { background:rgba(13,13,12,.78); backdrop-filter:blur(14px); }
+        :not(.dark) .glass { background:rgba(255,255,255,.82); }
+        input:focus,select:focus,textarea:focus { border-color:#C5A880!important; outline:none; }
+        .btn-bronze { background:#C5A880; color:#0D0D0C; font-weight:700; letter-spacing:.1em; transition:all .3s; }
+        .btn-bronze:hover { box-shadow:0 0 20px rgba(197,168,128,.4); }
+        .btn-bronze:disabled { opacity:.5; cursor:not-allowed; }
+        .tab-active { color:#C5A880!important; border-bottom:2px solid #C5A880; }
+        .badge-open        { background:rgba(197,168,128,.15); color:#C5A880; border:1px solid rgba(197,168,128,.4); }
+        .badge-urgent      { background:rgba(251,191,36,.15);  color:#FBBF24; border:1px solid rgba(251,191,36,.4); }
+        .badge-very_urgent { background:rgba(239,68,68,.15);   color:#EF4444; border:1px solid rgba(239,68,68,.4); }
+        .badge-taken       { background:rgba(100,116,139,.15); color:#94A3B8; border:1px solid rgba(100,116,139,.4); }
+        .badge-completed   { background:rgba(34,197,94,.15);   color:#22C55E; border:1px solid rgba(34,197,94,.4); }
+        .badge-cancelled   { background:rgba(239,68,68,.1);    color:#F87171; border:1px solid rgba(239,68,68,.3); }
+        .badge-pending     { background:rgba(251,191,36,.15);  color:#FBBF24; border:1px solid rgba(251,191,36,.4); }
+        .badge-approved    { background:rgba(34,197,94,.15);   color:#22C55E; border:1px solid rgba(34,197,94,.4); }
+        .badge-rejected    { background:rgba(239,68,68,.15);   color:#EF4444; border:1px solid rgba(239,68,68,.4); }
+        @keyframes mIn { from{opacity:0;transform:scale(.97)} to{opacity:1;transform:scale(1)} }
+        .modal-box { animation:mIn .2s ease-out; }
+        .sh { scrollbar-width:none; } .sh::-webkit-scrollbar { display:none; }
+    </style>
+</head>
+<body class="min-h-screen relative">
+
+<div class="fixed inset-0 z-0 pointer-events-none">
+    <div class="absolute inset-0 dark:bg-[#0D0D0C] bg-[#F9F8F6]"></div>
+    <div class="absolute inset-0 grid-bg opacity-50"></div>
+</div>
+
+<!-- ════════════ ADMIN LOGIN ════════════ -->
+<div id="admin-login" class="relative z-10 min-h-screen flex items-center justify-center px-5">
+    <div class="w-full max-w-sm">
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 mx-auto mb-4 border border-bronze/30 rounded-sm bg-[rgba(197,168,128,.08)] flex items-center justify-center">
+                <i class="fa-solid fa-shield-halved text-bronze text-2xl"></i>
+            </div>
+            <h1 class="font-serif text-3xl font-black dark:text-gray-50 text-gray-900 mb-1">ADMIN ACCESS</h1>
+            <p class="font-mono text-[11px] tracking-widest dark:text-zinc-500 text-zinc-500">P2W INTERPLUS — จัดการระบบ</p>
+        </div>
+        <div class="glass border dark:border-white/[.08] border-black/[.08] rounded-sm p-7">
+            <div>
+                <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">ADMIN KEY</label>
+                <input type="password" id="admin-key-input" placeholder="••••••••••"
+                    class="w-full dark:bg-white/[.05] bg-black/[.05] border dark:border-white/10 border-black/10 rounded-sm p-3 dark:text-gray-50 text-gray-900 text-sm mb-4 placeholder:dark:text-zinc-600 placeholder:text-zinc-400">
+                <button onclick="adminLogin()" class="btn-bronze w-full py-3.5 font-mono text-xs rounded-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-unlock"></i> เข้าระบบ Admin
+                </button>
+                <div id="admin-login-err" class="hidden text-center py-2.5 border border-red-500/40 bg-red-500/[.07] rounded-sm mt-3">
+                    <p class="font-mono text-xs text-red-400 font-bold">Admin Key ไม่ถูกต้อง</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ════════════ ADMIN DASHBOARD ════════════ -->
+<div id="admin-dash" class="hidden relative z-10 min-h-screen">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 dark:bg-[#0D0D0C]/92 bg-[#F9F8F6]/92 backdrop-blur-md border-b dark:border-white/[.07] border-black/[.07]">
+        <div class="flex justify-between items-center max-w-[1440px] mx-auto px-5 md:px-10 h-14">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-shield-halved text-bronze"></i>
+                <span class="font-serif font-black dark:text-gray-50 text-gray-900 text-sm">P2W ADMIN</span>
+                <span class="font-mono text-[9px] dark:text-zinc-600 text-zinc-400 tracking-widest hidden sm:block">INTERPLUS</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                <span class="font-mono text-[10px] dark:text-zinc-400 text-zinc-600">ONLINE</span>
+                <button onclick="adminLogout()" class="font-mono text-[10px] tracking-wider dark:text-zinc-500 text-zinc-500 hover:text-red-400 border dark:border-white/[.08] border-black/[.08] rounded-sm px-3 py-1.5 ml-2">
+                    <i class="fa-solid fa-right-from-bracket mr-1"></i>ออก
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tabs -->
+    <div class="max-w-[1440px] mx-auto px-5 md:px-10">
+        <div class="flex gap-6 border-b dark:border-white/[.07] border-black/[.07] mt-6">
+            <button onclick="switchTab('jobs')" id="tab-jobs"
+                class="tab-btn tab-active font-mono text-xs tracking-widest font-bold pb-3 dark:text-zinc-300 text-zinc-700 border-b-0">
+                <i class="fa-solid fa-briefcase mr-2"></i>จัดการงาน
+            </button>
+            <button onclick="switchTab('creators')" id="tab-creators"
+                class="tab-btn font-mono text-xs tracking-widest font-bold pb-3 dark:text-zinc-500 text-zinc-500 hover:text-bronze border-b-2 border-transparent">
+                <i class="fa-solid fa-users mr-2"></i>Creator
+                <span id="pending-badge" class="hidden ml-1.5 text-[9px] bg-amber-400/20 text-amber-400 border border-amber-400/30 px-1.5 py-0.5 rounded-full font-bold">0</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ── JOBS TAB ── -->
+    <div id="tab-jobs-content" class="max-w-[1440px] mx-auto px-5 md:px-10 py-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+            <h2 class="font-serif text-2xl font-black dark:text-gray-50 text-gray-900">งานทั้งหมด</h2>
+            <button onclick="openJobForm()" class="btn-bronze px-5 py-2.5 font-mono text-xs rounded-sm flex items-center gap-2">
+                <i class="fa-solid fa-plus"></i> เพิ่มงานใหม่
+            </button>
+        </div>
+        <div id="jobs-loading" class="text-center py-16">
+            <i class="fa-solid fa-circle-notch fa-spin text-bronze text-xl mb-3 block"></i>
+            <p class="font-mono text-xs dark:text-zinc-500 text-zinc-500">กำลังโหลด...</p>
+        </div>
+        <div id="jobs-table" class="hidden space-y-3"></div>
+    </div>
+
+    <!-- ── CREATORS TAB ── -->
+    <div id="tab-creators-content" class="hidden max-w-[1440px] mx-auto px-5 md:px-10 py-8">
+        <h2 class="font-serif text-2xl font-black dark:text-gray-50 text-gray-900 mb-6">Creator ทั้งหมด</h2>
+        <div id="creators-loading" class="text-center py-16">
+            <i class="fa-solid fa-circle-notch fa-spin text-bronze text-xl mb-3 block"></i>
+            <p class="font-mono text-xs dark:text-zinc-500 text-zinc-500">กำลังโหลด...</p>
+        </div>
+        <div id="creators-table" class="hidden space-y-3"></div>
+    </div>
+</div>
+
+<!-- ════════════ JOB FORM MODAL ════════════ -->
+<div id="job-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+    <div class="absolute inset-0 dark:bg-[#0D0D0C]/90 bg-[#F9F8F6]/90 backdrop-blur-md" onclick="closeJobModal()"></div>
+    <div class="modal-box relative w-full max-w-2xl glass border dark:border-[rgba(197,168,128,.2)] border-[rgba(139,100,48,.2)] rounded-sm z-10 shadow-2xl max-h-[92vh] overflow-y-auto sh">
+        <div class="p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 id="job-form-title" class="font-serif text-2xl font-black dark:text-gray-50 text-gray-900">เพิ่มงานใหม่</h3>
+                <button onclick="closeJobModal()" class="dark:text-zinc-500 text-zinc-500 hover:text-red-400">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <form id="job-form" class="space-y-4">
+                <input type="hidden" id="jf-id">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">รหัสงาน * (เช่น P2W-001)</label>
+                        <input type="text" id="jf-code" placeholder="P2W-001"
+                            class="w-full dark:bg-white/[.05] bg-black/[.05] border dark:border-white/10 border-black/10 rounded-sm p-3 dark:text-gray-50 text-gray-900 text-sm font-mono uppercase placeholder:dark:text-zinc-600 placeholder:text-zinc-400">
+                    </div>
+                    <div>
+                        <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">สถานะ</label>
+                        <select id="jf-status" class="w-full dark:bg-[#1a1a18] bg-white border dark:border-white/10 border-black/10 rounded-sm p-3 dark:text-gray-50 text-gray-900 text-sm">
+                            <option value="open">เปิดรับ</option>
+                            <option value="urgent">ด่วน</option>
+                            <option value="very_urgent">ด่วนมาก</option>
+                            <option value="taken">รับงานแล้ว</option>
+                            <option value="completed">เสร็จสิ้น</option>
+                            <option value="cancelled">ยกเลิก</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">ชื่องาน *</label>
+                    <input type="text" id="jf-title" placeholder="ชื่องานที่จ้าง"
+                        class="w-full dark:bg-white/[.05] bg-black/[.05] border dark:border-white/10 border-black/10 rounded-sm p-3 dark:text-gray-50 text-gray-900 text-sm placeholder:dark:text-zinc-600 placeholder:text-zinc-400">
+                </div>
+                <div>
+                    <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">รายละเอียดงาน</label>
+                    <textarea id="jf-desc" rows="4" placeholder="อธิบายรายละเอียดงาน..."
+                        class="w-full dark:bg-white/[.05] bg-black/[.05] border dark:border-white/10 border-black/10 rounded-sm p-3 dark:text-gray-50 text-gray-900 text-sm resize-none placeholder:dark:text-zinc-600 placeholder:text-zinc-400"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">งบประมาณ</label>
+                        <input type="text" id="jf-budget" placeholder="500-1,000 บาท"
+                            class="w-full dark:bg-white/[.05] bg-black/[.05] border dark:border-white/10 border-black/10 rounded-sm p-3 dark:text-gray-50 text-gray-900 text-sm placeholder:dark:text-zinc-600 placeholder:text-zinc-400">
+                    </div>
+                    <div>
+                        <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">Deadline</label>
+                        <input type="date" id="jf-deadline"
+                            class="w-full dark:bg-white/[.05] bg-black/[.05] border dark:border-white/10 border-black/10 rounded-sm p-3 dark:text-gray-50 text-gray-900 text-sm">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">สถานที่</label>
+                        <input type="text" id="jf-location" placeholder="กรุงเทพฯ / ออนไลน์"
+                            class="w-full dark:bg-white/[.05] bg-black/[.05] border dark:border-white/10 border-black/10 rounded-sm p-3 dark:text-gray-50 text-gray-900 text-sm placeholder:dark:text-zinc-600 placeholder:text-zinc-400">
+                    </div>
+                    <div>
+                        <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">ความยาว / ระยะเวลา</label>
+                        <input type="text" id="jf-duration" placeholder="30 วิ - 1 นาที"
+                            class="w-full dark:bg-white/[.05] bg-black/[.05] border dark:border-white/10 border-black/10 rounded-sm p-3 dark:text-gray-50 text-gray-900 text-sm placeholder:dark:text-zinc-600 placeholder:text-zinc-400">
+                    </div>
+                </div>
+                <div>
+                    <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-2 block">ประเภทคอนเทนต์</label>
+                    <div class="flex flex-wrap gap-2">
+                        <label class="tag-cb"><input type="checkbox" value="รูปภาพ" class="ct-type hidden"><span class="font-mono text-[10px] cursor-pointer border dark:border-white/10 border-black/10 px-3 py-1.5 rounded-sm dark:text-zinc-400 text-zinc-600 hover:border-bronze/40">รูปภาพ</span></label>
+                        <label class="tag-cb"><input type="checkbox" value="วิดีโอ" class="ct-type hidden"><span class="font-mono text-[10px] cursor-pointer border dark:border-white/10 border-black/10 px-3 py-1.5 rounded-sm dark:text-zinc-400 text-zinc-600 hover:border-bronze/40">วิดีโอ</span></label>
+                        <label class="tag-cb"><input type="checkbox" value="Reel" class="ct-type hidden"><span class="font-mono text-[10px] cursor-pointer border dark:border-white/10 border-black/10 px-3 py-1.5 rounded-sm dark:text-zinc-400 text-zinc-600 hover:border-bronze/40">Reel</span></label>
+                        <label class="tag-cb"><input type="checkbox" value="Short" class="ct-type hidden"><span class="font-mono text-[10px] cursor-pointer border dark:border-white/10 border-black/10 px-3 py-1.5 rounded-sm dark:text-zinc-400 text-zinc-600 hover:border-bronze/40">Short</span></label>
+                        <label class="tag-cb"><input type="checkbox" value="Story" class="ct-type hidden"><span class="font-mono text-[10px] cursor-pointer border dark:border-white/10 border-black/10 px-3 py-1.5 rounded-sm dark:text-zinc-400 text-zinc-600 hover:border-bronze/40">Story</span></label>
+                        <label class="tag-cb"><input type="checkbox" value="บทความ" class="ct-type hidden"><span class="font-mono text-[10px] cursor-pointer border dark:border-white/10 border-black/10 px-3 py-1.5 rounded-sm dark:text-zinc-400 text-zinc-600 hover:border-bronze/40">บทความ</span></label>
+                    </div>
+                </div>
+                <div>
+                    <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-2 block">ช่องทาง</label>
+                    <div class="flex flex-wrap gap-2">
+                        <label class="tag-cb"><input type="checkbox" value="instagram" class="ct-chan hidden"><span class="font-mono text-[10px] cursor-pointer border dark:border-white/10 border-black/10 px-3 py-1.5 rounded-sm dark:text-zinc-400 text-zinc-600 hover:border-bronze/40">Instagram</span></label>
+                        <label class="tag-cb"><input type="checkbox" value="tiktok" class="ct-chan hidden"><span class="font-mono text-[10px] cursor-pointer border dark:border-white/10 border-black/10 px-3 py-1.5 rounded-sm dark:text-zinc-400 text-zinc-600 hover:border-bronze/40">TikTok</span></label>
+                        <label class="tag-cb"><input type="checkbox" value="youtube" class="ct-chan hidden"><span class="font-mono text-[10px] cursor-pointer border dark:border-white/10 border-black/10 px-3 py-1.5 rounded-sm dark:text-zinc-400 text-zinc-600 hover:border-bronze/40">YouTube</span></label>
+                        <label class="tag-cb"><input type="checkbox" value="facebook" class="ct-chan hidden"><span class="font-mono text-[10px] cursor-pointer border dark:border-white/10 border-black/10 px-3 py-1.5 rounded-sm dark:text-zinc-400 text-zinc-600 hover:border-bronze/40">Facebook</span></label>
+                        <label class="tag-cb"><input type="checkbox" value="lemon8" class="ct-chan hidden"><span class="font-mono text-[10px] cursor-pointer border dark:border-white/10 border-black/10 px-3 py-1.5 rounded-sm dark:text-zinc-400 text-zinc-600 hover:border-bronze/40">Lemon8</span></label>
+                        <label class="tag-cb"><input type="checkbox" value="x" class="ct-chan hidden"><span class="font-mono text-[10px] cursor-pointer border dark:border-white/10 border-black/10 px-3 py-1.5 rounded-sm dark:text-zinc-400 text-zinc-600 hover:border-bronze/40">X/Twitter</span></label>
+                    </div>
+                </div>
+                <div>
+                    <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">ข้อกำหนดเพิ่มเติม</label>
+                    <textarea id="jf-req" rows="3" placeholder="เงื่อนไข ข้อกำหนด หรือรายละเอียดอื่นๆ..."
+                        class="w-full dark:bg-white/[.05] bg-black/[.05] border dark:border-white/10 border-black/10 rounded-sm p-3 dark:text-gray-50 text-gray-900 text-sm resize-none placeholder:dark:text-zinc-600 placeholder:text-zinc-400"></textarea>
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="submit" id="jf-submit" class="btn-bronze flex-1 py-3.5 font-mono text-xs rounded-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-floppy-disk"></i> บันทึก
+                    </button>
+                    <button type="button" onclick="closeJobModal()" class="px-6 py-3.5 font-mono text-xs border dark:border-white/10 border-black/10 rounded-sm dark:text-zinc-400 text-zinc-600 hover:border-bronze/40">
+                        ยกเลิก
+                    </button>
+                </div>
+                <div id="jf-error" class="hidden text-center py-2.5 border border-red-500/40 bg-red-500/[.07] rounded-sm">
+                    <p id="jf-error-msg" class="font-mono text-xs text-red-400 font-bold"></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div id="toasts" class="fixed bottom-6 right-5 z-[200] flex flex-col gap-2 max-w-xs pointer-events-none"></div>
+
+<script>
+// ─── Admin Auth ───────────────────────────────────────────────
+let adminKey = localStorage.getItem('p2w-admin-key') || '';
+
+if(adminKey) showDash(); // auto-login if key saved
+
+async function adminLogin(){
+    const key = document.getElementById('admin-key-input').value.trim();
+    if(!key) return;
+    // Test key against API
+    const res = await fetch('/api/admin/jobs', { headers:{ 'x-admin-key': key } });
+    if(res.ok){
+        adminKey = key;
+        localStorage.setItem('p2w-admin-key', key);
+        document.getElementById('admin-login-err').classList.add('hidden');
+        showDash();
+    } else {
+        document.getElementById('admin-login-err').classList.remove('hidden');
+    }
+}
+document.getElementById('admin-key-input').addEventListener('keydown', e=>{ if(e.key==='Enter') adminLogin(); });
+
+function adminLogout(){
+    localStorage.removeItem('p2w-admin-key');
+    adminKey = '';
+    document.getElementById('admin-dash').classList.add('hidden');
+    document.getElementById('admin-login').classList.remove('hidden');
+}
+
+function showDash(){
+    document.getElementById('admin-login').classList.add('hidden');
+    document.getElementById('admin-dash').classList.remove('hidden');
+    loadJobs();
+    loadCreators();
+}
+
+// ─── Tabs ────────────────────────────────────────────────────
+function switchTab(t){
+    document.getElementById('tab-jobs-content').classList.toggle('hidden', t!=='jobs');
+    document.getElementById('tab-creators-content').classList.toggle('hidden', t!=='creators');
+    document.querySelectorAll('.tab-btn').forEach(b=>{
+        const active = b.id === `tab-${t}`;
+        b.classList.toggle('tab-active', active);
+        b.classList.toggle('dark:text-zinc-500', !active);
+        b.classList.toggle('text-zinc-500', !active);
+        b.classList.toggle('dark:text-zinc-300', active);
+        b.classList.toggle('text-zinc-700', active);
+    });
+}
+
+// ─── Jobs ────────────────────────────────────────────────────
+let jobs = [];
+async function loadJobs(){
+    const res = await fetch('/api/admin/jobs', { headers:{ 'x-admin-key': adminKey } });
+    if(!res.ok){ adminKey=''; showDash(); return; }
+    jobs = await res.json();
+    renderJobs();
+}
+
+function renderJobs(){
+    const el = document.getElementById('jobs-table');
+    document.getElementById('jobs-loading').classList.add('hidden');
+    el.classList.remove('hidden');
+    if(!jobs.length){ el.innerHTML='<p class="font-mono text-xs dark:text-zinc-500 text-zinc-500 text-center py-10">ยังไม่มีงาน กด "เพิ่มงานใหม่" เลย</p>'; return; }
+    el.innerHTML = jobs.map(j=>`
+        <div class="glass border dark:border-white/[.08] border-black/[.08] rounded-sm p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+            <div class="flex items-center gap-3 shrink-0">
+                <span class="font-mono text-xs font-black text-bronze bg-[rgba(197,168,128,.1)] border border-bronze/30 px-2.5 py-1 rounded-sm">${j.code}</span>
+                <span class="font-mono text-[10px] font-bold px-2 py-0.5 rounded-sm badge-${j.status}">${statusLabel(j.status)}</span>
+            </div>
+            <div class="flex-1 min-w-0">
+                <p class="font-sans font-semibold dark:text-gray-50 text-gray-900 text-sm truncate">${j.title}</p>
+                <p class="font-mono text-[10px] dark:text-zinc-500 text-zinc-500 mt-0.5">
+                    ${j.budget ? '💰 '+j.budget : ''} ${j.deadline ? '&nbsp;📅 '+fmtDate(j.deadline) : ''}
+                </p>
+            </div>
+            <div class="flex gap-2 shrink-0 flex-wrap">
+                <!-- Quick status -->
+                <select onchange="quickStatus(${j.id}, this.value)"
+                    class="font-mono text-[10px] dark:bg-[#1a1a18] bg-white border dark:border-white/10 border-black/10 rounded-sm px-2 py-1.5 dark:text-zinc-300 text-zinc-700">
+                    <option value="open"        ${j.status==='open'?'selected':''}>เปิดรับ</option>
+                    <option value="urgent"      ${j.status==='urgent'?'selected':''}>ด่วน</option>
+                    <option value="very_urgent" ${j.status==='very_urgent'?'selected':''}>ด่วนมาก</option>
+                    <option value="taken"       ${j.status==='taken'?'selected':''}>รับแล้ว</option>
+                    <option value="completed"   ${j.status==='completed'?'selected':''}>เสร็จสิ้น</option>
+                    <option value="cancelled"   ${j.status==='cancelled'?'selected':''}>ยกเลิก</option>
+                </select>
+                <button onclick="openJobForm(${j.id})"
+                    class="font-mono text-[10px] px-3 py-1.5 border dark:border-white/10 border-black/10 rounded-sm dark:text-zinc-400 text-zinc-600 hover:border-bronze/40 hover:text-bronze">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
+                <button onclick="deleteJob(${j.id},'${j.code}')"
+                    class="font-mono text-[10px] px-3 py-1.5 border border-red-500/30 rounded-sm text-red-400 hover:bg-red-500/10">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function quickStatus(id, status){
+    await fetch(`/api/admin/jobs/${id}`, {
+        method:'PATCH', headers:{ 'x-admin-key': adminKey, 'Content-Type':'application/json' },
+        body: JSON.stringify({ status })
+    });
+    toast('อัพเดทสถานะแล้ว ✓','success');
+    await loadJobs();
+}
+
+async function deleteJob(id, code){
+    if(!confirm(`ลบงาน ${code} ออกจากระบบ?`)) return;
+    await fetch(`/api/admin/jobs/${id}`,{ method:'DELETE', headers:{'x-admin-key':adminKey} });
+    toast(`ลบงาน ${code} แล้ว`,'success');
+    await loadJobs();
+}
+
+// ─── Job Form Modal ───────────────────────────────────────────
+function openJobForm(id){
+    const j = id ? jobs.find(x=>x.id===id) : null;
+    document.getElementById('job-form-title').textContent = j ? 'แก้ไขงาน' : 'เพิ่มงานใหม่';
+    document.getElementById('jf-id').value      = j?.id || '';
+    document.getElementById('jf-code').value    = j?.code || '';
+    document.getElementById('jf-code').disabled = !!j;
+    document.getElementById('jf-title').value   = j?.title || '';
+    document.getElementById('jf-desc').value    = j?.description || '';
+    document.getElementById('jf-budget').value  = j?.budget || '';
+    document.getElementById('jf-deadline').value= j?.deadline ? j.deadline.split('T')[0] : '';
+    document.getElementById('jf-location').value= j?.location || '';
+    document.getElementById('jf-duration').value= j?.duration || '';
+    document.getElementById('jf-req').value     = j?.requirements || '';
+    document.getElementById('jf-status').value  = j?.status || 'open';
+    document.getElementById('jf-error').classList.add('hidden');
+    // Checkboxes
+    document.querySelectorAll('.ct-type').forEach(cb=>{
+        const checked = j?.content_type?.includes(cb.value) || false;
+        cb.checked = checked;
+        cb.nextElementSibling.style.borderColor = checked ? '#C5A880' : '';
+        cb.nextElementSibling.style.color = checked ? '#C5A880' : '';
+    });
+    document.querySelectorAll('.ct-chan').forEach(cb=>{
+        const checked = j?.channels?.includes(cb.value) || false;
+        cb.checked = checked;
+        cb.nextElementSibling.style.borderColor = checked ? '#C5A880' : '';
+        cb.nextElementSibling.style.color = checked ? '#C5A880' : '';
+    });
+    document.getElementById('job-modal').classList.remove('hidden');
+    document.getElementById('job-modal').classList.add('flex');
+}
+
+function closeJobModal(){
+    document.getElementById('job-modal').classList.add('hidden');
+    document.getElementById('job-modal').classList.remove('flex');
+}
+
+// Checkbox styling
+document.querySelectorAll('.ct-type,.ct-chan').forEach(cb=>{
+    cb.addEventListener('change',()=>{
+        cb.nextElementSibling.style.borderColor = cb.checked ? '#C5A880' : '';
+        cb.nextElementSibling.style.color = cb.checked ? '#C5A880' : '';
+    });
+});
+
+document.getElementById('job-form').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const id = document.getElementById('jf-id').value;
+    const errEl = document.getElementById('jf-error');
+    const errMsg = document.getElementById('jf-error-msg');
+    const btn = document.getElementById('jf-submit');
+    errEl.classList.add('hidden');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> กำลังบันทึก...';
+
+    const body = {
+        code:         document.getElementById('jf-code').value.trim().toUpperCase(),
+        title:        document.getElementById('jf-title').value.trim(),
+        description:  document.getElementById('jf-desc').value.trim(),
+        budget:       document.getElementById('jf-budget').value.trim(),
+        deadline:     document.getElementById('jf-deadline').value || null,
+        location:     document.getElementById('jf-location').value.trim(),
+        duration:     document.getElementById('jf-duration').value.trim(),
+        requirements: document.getElementById('jf-req').value.trim(),
+        status:       document.getElementById('jf-status').value,
+        content_type: [...document.querySelectorAll('.ct-type:checked')].map(c=>c.value),
+        channels:     [...document.querySelectorAll('.ct-chan:checked')].map(c=>c.value),
+    };
+
+    if(!body.title){ errMsg.textContent='กรุณากรอกชื่องาน'; errEl.classList.remove('hidden'); btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-floppy-disk"></i> บันทึก'; return; }
+
+    try {
+        const url = id ? `/api/admin/jobs/${id}` : '/api/admin/jobs';
+        const method = id ? 'PATCH' : 'POST';
+        const res = await fetch(url,{ method, headers:{'x-admin-key':adminKey,'Content-Type':'application/json'}, body:JSON.stringify(body) });
+        const json = await res.json();
+        if(res.ok){
+            toast(id ? 'อัพเดทงานแล้ว ✓' : 'เพิ่มงานใหม่แล้ว ✓', 'success');
+            closeJobModal();
+            await loadJobs();
+        } else {
+            errMsg.textContent = json.error || 'เกิดข้อผิดพลาด';
+            errEl.classList.remove('hidden');
+        }
+    } catch {
+        errMsg.textContent = 'เชื่อมต่อ server ไม่ได้';
+        errEl.classList.remove('hidden');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> บันทึก';
+    }
+});
+
+// ─── Creators ────────────────────────────────────────────────
+let creators = [];
+async function loadCreators(){
+    const res = await fetch('/api/admin/creators',{ headers:{'x-admin-key':adminKey} });
+    if(!res.ok) return;
+    creators = await res.json();
+    renderCreators();
+    // Pending badge
+    const pending = creators.filter(c=>c.status==='pending').length;
+    const badge = document.getElementById('pending-badge');
+    if(pending){ badge.textContent = pending; badge.classList.remove('hidden'); }
+    else badge.classList.add('hidden');
+}
+
+function renderCreators(){
+    const el = document.getElementById('creators-table');
+    document.getElementById('creators-loading').classList.add('hidden');
+    el.classList.remove('hidden');
+    if(!creators.length){ el.innerHTML='<p class="font-mono text-xs dark:text-zinc-500 text-zinc-500 text-center py-10">ยังไม่มี Creator สมัครเข้ามา</p>'; return; }
+    el.innerHTML = creators.map(c=>`
+        <div class="glass border dark:border-white/[.08] border-black/[.08] rounded-sm p-5 flex flex-col sm:flex-row sm:items-center gap-4 ${c.status==='pending'?'border-amber-400/20!important':''}" style="${c.status==='pending'?'border-color:rgba(251,191,36,.25)':''}">
+            <div class="flex items-center gap-3 flex-1 min-w-0">
+                <div class="w-10 h-10 rounded-full bg-[rgba(197,168,128,.15)] flex items-center justify-center shrink-0">
+                    <span class="font-serif font-black text-bronze text-sm">${c.name[0].toUpperCase()}</span>
+                </div>
+                <div class="min-w-0">
+                    <p class="font-sans font-semibold dark:text-gray-50 text-gray-900 text-sm truncate">${c.name}</p>
+                    <p class="font-mono text-[10px] dark:text-zinc-500 text-zinc-500 truncate">${c.email}</p>
+                </div>
+            </div>
+            <div class="flex flex-wrap gap-2 items-center text-[10px] font-mono">
+                ${c.phone ? `<span class="dark:text-zinc-400 text-zinc-600">${c.phone}</span>` : ''}
+                ${c.followers ? `<span class="dark:bg-white/[.05] bg-black/[.05] border dark:border-white/[.07] border-black/[.07] px-2 py-0.5 rounded-sm dark:text-zinc-400 text-zinc-600">${c.followers}</span>` : ''}
+                ${c.category ? `<span class="dark:bg-white/[.05] bg-black/[.05] border dark:border-white/[.07] border-black/[.07] px-2 py-0.5 rounded-sm dark:text-zinc-400 text-zinc-600">${c.category}</span>` : ''}
+                ${c.platforms&&c.platforms.length ? c.platforms.map(p=>`<span class="dark:bg-white/[.05] bg-black/[.05] border dark:border-white/[.07] border-black/[.07] px-2 py-0.5 rounded-sm dark:text-zinc-400 text-zinc-600">${p}</span>`).join('') : ''}
+                <span class="font-bold px-2 py-0.5 rounded-sm badge-${c.status}">${creatorStatusLabel(c.status)}</span>
+            </div>
+            <div class="flex gap-2 shrink-0">
+                ${c.status==='pending' ? `
+                <button onclick="approveCreator(${c.id},'approved')" class="btn-bronze px-4 py-2 font-mono text-[10px] rounded-sm flex items-center gap-1.5">
+                    <i class="fa-solid fa-check"></i> อนุมัติ
+                </button>
+                <button onclick="approveCreator(${c.id},'rejected')" class="px-4 py-2 font-mono text-[10px] rounded-sm border border-red-500/30 text-red-400 hover:bg-red-500/10 flex items-center gap-1.5">
+                    <i class="fa-solid fa-xmark"></i> ปฏิเสธ
+                </button>` : `
+                <button onclick="approveCreator(${c.id},'pending')" class="px-3 py-2 font-mono text-[10px] rounded-sm border dark:border-white/10 border-black/10 dark:text-zinc-500 text-zinc-500 hover:border-bronze/40 hover:text-bronze">
+                    รีเซ็ต
+                </button>`}
+            </div>
+        </div>
+    `).join('');
+}
+
+async function approveCreator(id, status){
+    const res = await fetch(`/api/admin/creators/${id}`,{
+        method:'PATCH', headers:{'x-admin-key':adminKey,'Content-Type':'application/json'},
+        body: JSON.stringify({ status })
+    });
+    if(res.ok){
+        const labels = { approved:'อนุมัติแล้ว ✓', rejected:'ปฏิเสธแล้ว', pending:'รีเซ็ตเป็น pending แล้ว' };
+        toast(labels[status],'success');
+        await loadCreators();
+    }
+}
+
+// ─── Helpers ─────────────────────────────────────────────────
+function statusLabel(s){
+    return { open:'เปิดรับ', urgent:'ด่วน', very_urgent:'ด่วนมาก!', taken:'รับแล้ว', completed:'เสร็จสิ้น', cancelled:'ยกเลิก' }[s]||s;
+}
+function creatorStatusLabel(s){
+    return { pending:'รอ Approve', approved:'อนุมัติแล้ว', rejected:'ปฏิเสธ' }[s]||s;
+}
+function fmtDate(d){ return d ? new Date(d).toLocaleDateString('th-TH',{year:'numeric',month:'short',day:'numeric'}) : '-'; }
+
+// ─── Toast ───────────────────────────────────────────────────
+function toast(msg, type='success'){
+    const c = document.getElementById('toasts');
+    const el = document.createElement('div');
+    el.className = `pointer-events-auto p-3.5 rounded-sm border shadow-lg flex items-center gap-2.5 backdrop-blur-md font-mono text-xs font-bold leading-snug ${
+        type==='success' ? 'border-[rgba(197,168,128,.35)] dark:bg-[#0D0D0C]/90 bg-[#F9F8F6]/90 text-bronze' :
+        'border-red-500/30 dark:bg-red-950/80 bg-red-50/80 text-red-400'
+    }`;
+    el.innerHTML = `<i class="fa-solid fa-circle-check shrink-0"></i>${msg}`;
+    c.appendChild(el);
+    setTimeout(()=>el.remove(), 3500);
+}
+
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeJobModal(); });
+</script>
+</body>
+</html>
