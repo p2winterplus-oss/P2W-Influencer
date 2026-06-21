@@ -92,7 +92,9 @@
         .card-glow:hover { border-color: rgba(197,168,128,0.45) !important; box-shadow: 0 0 32px rgba(197,168,128,0.08); }
 
         /* ─── Pricing popular ─── */
-        .pricing-popular { border-color: #C5A880 !important; box-shadow: 0 0 32px rgba(197,168,128,0.15); }
+        .pricing-popular { border-color: rgba(197,168,128,0.35) !important; box-shadow: 0 0 24px rgba(197,168,128,0.1); transition: box-shadow .4s; }
+        .pricing-popular:hover { box-shadow: 0 0 48px rgba(197,168,128,0.28) !important; border-color: rgba(197,168,128,0.7) !important; }
+        #popular-ring { border-radius:2px; position:absolute; inset:0; pointer-events:none; z-index:0; }
 
         /* ─── Nav underline ─── */
         .nav-btn { position: relative; }
@@ -477,7 +479,9 @@
                     </div>
 
                     <!-- STANDARD (popular) -->
-                    <div class="fade-up d1 glass-card p-8 rounded-sm border pricing-popular flex flex-col relative">
+                    <div class="fade-up d1 relative" style="padding:1px;border-radius:2px">
+                    <div id="popular-ring"></div>
+                    <div class="glass-card p-8 rounded-sm border pricing-popular flex flex-col relative" style="z-index:1">
                         <div class="absolute -top-4 left-1/2 -translate-x-1/2">
                             <span class="btn-bronze px-4 py-1 font-mono text-[10px] font-black tracking-widest rounded-sm shadow-lg">&#10022; แนะนำ</span>
                         </div>
@@ -499,6 +503,7 @@
                             เลือกแพ็คเกจนี้
                         </button>
                     </div>
+                    </div><!-- /popular-wrapper -->
 
                     <!-- PREMIUM -->
                     <div class="fade-up d2 glass-card p-8 rounded-sm border dark:border-white/[0.08] border-black/[0.08] card-glow flex flex-col">
@@ -932,6 +937,44 @@
                 })
             });
         } catch { /* silent */ }
+    })();
+
+    // ─── Popular ring light animation ───
+    (function(){
+        const ring = document.getElementById('popular-ring');
+        if (!ring) return;
+        let raf, timeout;
+        function runLight(){
+            const dir   = Math.random() > 0.5 ? 1 : -1;
+            const speed = 1.0 + Math.random() * 1.8;          // deg per frame
+            const total = 90 + Math.random() * 220;            // how far to travel
+            let angle   = Math.random() * 360;
+            let traveled = 0;
+            function frame(){
+                angle    += dir * speed;
+                traveled += speed;
+                ring.style.background =
+                    `conic-gradient(from ${angle}deg,` +
+                    `transparent 0%,transparent 33%,` +
+                    `rgba(197,168,128,0.35) 42%,` +
+                    `rgba(255,228,160,0.85) 50%,` +
+                    `rgba(197,168,128,0.35) 58%,` +
+                    `transparent 67%,transparent 100%)`;
+                if (traveled < total) {
+                    raf = requestAnimationFrame(frame);
+                } else {
+                    ring.style.background = 'none';
+                    timeout = setTimeout(runLight, 5000 + Math.random() * 5000);
+                }
+            }
+            raf = requestAnimationFrame(frame);
+        }
+        timeout = setTimeout(runLight, 1500 + Math.random() * 1500);
+        // pause when tab hidden
+        document.addEventListener('visibilitychange', function(){
+            if (document.hidden) { cancelAnimationFrame(raf); clearTimeout(timeout); }
+            else timeout = setTimeout(runLight, 500);
+        });
     })();
     </script>
 
