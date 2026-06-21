@@ -20,6 +20,12 @@ app.use('/api/admin', require('./routes/admin'));
 // ─── Health check ─────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => res.json({ status: 'ok', ts: new Date() }));
 
+// ─── Debug: ตรวจสอบ ADMIN_KEY (ลบออกหลังใช้งาน) ──────────────────────────
+app.get('/api/debug-key', (req, res) => {
+    const key = process.env.ADMIN_KEY || '';
+    res.json({ length: key.length, first3: key.slice(0,3), last3: key.slice(-3) });
+});
+
 // ─── Init DB tables ───────────────────────────────────────────────────────
 async function initDB() {
     const fs = require('fs');
