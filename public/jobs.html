@@ -27,6 +27,7 @@
         .glass { background:rgba(13,13,12,.78); backdrop-filter:blur(14px); }
         :not(.dark) .glass { background:rgba(255,255,255,.82); }
         input:focus { border-color:#C5A880!important; outline:none; }
+        .dark .logo-img { filter:drop-shadow(0 0 1px rgba(197,168,128,.9)) drop-shadow(0 0 1px rgba(197,168,128,.6)); }
         .btn-bronze { background:#C5A880; color:#0D0D0C; font-weight:700; letter-spacing:.12em; transition:all .3s; }
         .btn-bronze:hover { box-shadow:0 0 24px rgba(197,168,128,.5); transform:scale(1.02); }
         .btn-bronze:disabled { opacity:.5; transform:none; box-shadow:none; cursor:not-allowed; }
@@ -57,7 +58,7 @@
 <header class="fixed top-0 w-full z-50 dark:bg-[#0D0D0C]/88 bg-[#F9F8F6]/88 backdrop-blur-md border-b dark:border-white/[.07] border-black/[.07]">
     <div class="flex justify-between items-center max-w-[1440px] mx-auto px-5 md:px-10 h-16">
         <a href="/" class="flex items-center gap-2.5">
-            <img src="logo.png" alt="P2W" class="h-11 w-auto" style="filter:drop-shadow(0 0 1px rgba(197,168,128,.9)) drop-shadow(0 0 1px rgba(197,168,128,.6))" onerror="this.style.display='none'">
+            <img src="logo.png" alt="P2W" class="logo-img h-11 w-auto" onerror="this.style.display='none'">
             <div>
                 <div class="font-serif text-sm font-black text-bronze leading-tight">P2W INTERPLUS</div>
                 <div class="font-mono text-[8px] tracking-widest text-bronze/50 uppercase">CONTENTS & INFLUENCER</div>
