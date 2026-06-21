@@ -234,7 +234,11 @@
                         <label class="tag-cb"><input type="checkbox" value="facebook" class="ct-chan hidden"><span class="font-mono text-[10px] cursor-pointer border dark:border-white/10 border-black/10 px-3 py-1.5 rounded-sm dark:text-zinc-400 text-zinc-600 hover:border-bronze/40">Facebook</span></label>
                         <label class="tag-cb"><input type="checkbox" value="lemon8" class="ct-chan hidden"><span class="font-mono text-[10px] cursor-pointer border dark:border-white/10 border-black/10 px-3 py-1.5 rounded-sm dark:text-zinc-400 text-zinc-600 hover:border-bronze/40">Lemon8</span></label>
                         <label class="tag-cb"><input type="checkbox" value="x" class="ct-chan hidden"><span class="font-mono text-[10px] cursor-pointer border dark:border-white/10 border-black/10 px-3 py-1.5 rounded-sm dark:text-zinc-400 text-zinc-600 hover:border-bronze/40">X/Twitter</span></label>
+                        <label class="tag-cb"><input type="checkbox" value="shopee" class="ct-chan hidden"><span class="font-mono text-[10px] cursor-pointer border dark:border-white/10 border-black/10 px-3 py-1.5 rounded-sm dark:text-zinc-400 text-zinc-600 hover:border-bronze/40">Shopee</span></label>
+                        <label class="tag-cb"><input type="checkbox" value="lazada" class="ct-chan hidden"><span class="font-mono text-[10px] cursor-pointer border dark:border-white/10 border-black/10 px-3 py-1.5 rounded-sm dark:text-zinc-400 text-zinc-600 hover:border-bronze/40">Lazada</span></label>
+                        <label class="tag-cb"><input type="checkbox" id="chan-other-cb" class="ct-chan hidden" value="__other__"><span class="font-mono text-[10px] cursor-pointer border dark:border-white/10 border-black/10 px-3 py-1.5 rounded-sm dark:text-zinc-400 text-zinc-600 hover:border-bronze/40">อื่นๆ</span></label>
                     </div>
+                    <input type="text" id="chan-other-text" placeholder="ระบุช่องทางอื่นๆ เช่น Line, Website..." class="hidden mt-2 w-full dark:bg-white/[.05] bg-black/[.05] border dark:border-white/10 border-black/10 rounded-sm p-2.5 font-mono text-xs dark:text-gray-200 text-gray-800 placeholder:dark:text-zinc-600 placeholder:text-zinc-400">
                 </div>
                 <div>
                     <label class="font-mono text-[10px] tracking-widest text-bronze font-bold mb-1.5 block">ข้อกำหนดเพิ่มเติม</label>
@@ -439,6 +443,13 @@ function closeJobModal(){
     document.getElementById('job-modal').classList.remove('flex');
 }
 
+// Toggle "อื่นๆ" text input for channels
+document.getElementById('chan-other-cb').addEventListener('change', function(){
+    const txt = document.getElementById('chan-other-text');
+    txt.classList.toggle('hidden', !this.checked);
+    if(this.checked) txt.focus();
+});
+
 // Checkbox styling
 document.querySelectorAll('.ct-type,.ct-chan').forEach(cb=>{
     cb.addEventListener('change',()=>{
@@ -468,7 +479,13 @@ document.getElementById('job-form').addEventListener('submit', async function(e)
         requirements: document.getElementById('jf-req').value.trim(),
         status:       document.getElementById('jf-status').value,
         content_type: [...document.querySelectorAll('.ct-type:checked')].map(c=>c.value),
-        channels:     [...document.querySelectorAll('.ct-chan:checked')].map(c=>c.value),
+        channels:     [...document.querySelectorAll('.ct-chan:checked')].flatMap(c=>{
+            if(c.value==='__other__'){
+                const t=document.getElementById('chan-other-text').value.trim();
+                return t ? t.split(',').map(s=>s.trim()).filter(Boolean) : [];
+            }
+            return [c.value];
+        }),
     };
 
     if(!body.title){ errMsg.textContent='กรุณากรอกชื่องาน'; errEl.classList.remove('hidden'); btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-floppy-disk"></i> บันทึก'; return; }

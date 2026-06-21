@@ -176,7 +176,14 @@
                                 <i class="fa-solid fa-cart-shopping text-base"></i> Lazada
                             </label>
                         </div>
+                        <div class="cb-item">
+                            <input type="checkbox" id="p-other" value="__other__" class="hidden">
+                            <label for="p-other" class="flex items-center gap-2 cursor-pointer border dark:border-white/10 border-black/10 rounded-sm px-3 py-2 font-mono text-xs dark:text-zinc-400 text-zinc-600 hover:border-bronze/40 transition-all">
+                                <i class="fa-solid fa-plus text-base"></i> อื่นๆ
+                            </label>
+                        </div>
                     </div>
+                    <input type="text" id="platform-other-text" placeholder="ระบุแพลตฟอร์มอื่นๆ เช่น Line, Website, Podcast..." class="hidden mt-2 w-full dark:bg-white/[.05] bg-black/[.05] border dark:border-white/10 border-black/10 rounded-sm p-2.5 font-mono text-xs dark:text-gray-200 text-gray-800 placeholder:dark:text-zinc-600 placeholder:text-zinc-400">
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -242,6 +249,13 @@ function applyTheme(t){
 }
 document.getElementById('theme-toggle').onclick=()=>applyTheme(document.documentElement.classList.contains('dark')?'light':'dark');
 
+// Toggle "อื่นๆ" text input
+document.getElementById('p-other').addEventListener('change', function(){
+    const txt = document.getElementById('platform-other-text');
+    txt.classList.toggle('hidden', !this.checked);
+    if(this.checked) txt.focus();
+});
+
 // Checkbox platforms
 document.querySelectorAll('.cb-item input[type=checkbox]').forEach(cb=>{
     cb.addEventListener('change', ()=>{
@@ -267,7 +281,13 @@ document.getElementById('reg-form').addEventListener('submit', async function(e)
     if(pass !== pass2){ errMsg.textContent='รหัสผ่านไม่ตรงกัน'; errEl.classList.remove('hidden'); return; }
     if(pass.length < 8){ errMsg.textContent='รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร'; errEl.classList.remove('hidden'); return; }
 
-    const platforms = [...document.querySelectorAll('.cb-item input:checked')].map(c=>c.value);
+    const platforms = [...document.querySelectorAll('.cb-item input:checked')].flatMap(c=>{
+        if(c.value==='__other__'){
+            const t=document.getElementById('platform-other-text').value.trim();
+            return t ? t.split(',').map(s=>s.trim()).filter(Boolean) : [];
+        }
+        return [c.value];
+    });
 
     btn.disabled = true;
     btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> กำลังส่ง...';
