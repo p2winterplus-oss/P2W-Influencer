@@ -257,15 +257,22 @@ if(adminKey) showDash(); // auto-login if key saved
 async function adminLogin(){
     const key = document.getElementById('admin-key-input').value.trim();
     if(!key) return;
-    // Test key against API
-    const res = await fetch('/api/admin/jobs', { headers:{ 'x-admin-key': key } });
-    if(res.ok){
-        adminKey = key;
-        localStorage.setItem('p2w-admin-key', key);
-        document.getElementById('admin-login-err').classList.add('hidden');
-        showDash();
-    } else {
-        document.getElementById('admin-login-err').classList.remove('hidden');
+    const errEl = document.getElementById('admin-login-err');
+    const errMsg = errEl.querySelector('p');
+    errEl.classList.add('hidden');
+    try {
+        const res = await fetch('/api/admin/jobs', { headers:{ 'x-admin-key': key } });
+        if(res.ok){
+            adminKey = key;
+            localStorage.setItem('p2w-admin-key', key);
+            showDash();
+        } else {
+            errMsg.textContent = 'Admin Key ไม่ถูกต้อง';
+            errEl.classList.remove('hidden');
+        }
+    } catch {
+        errMsg.textContent = 'เชื่อมต่อ server ไม่ได้ — กรุณาลองใหม่';
+        errEl.classList.remove('hidden');
     }
 }
 document.getElementById('admin-key-input').addEventListener('keydown', e=>{ if(e.key==='Enter') adminLogin(); });
