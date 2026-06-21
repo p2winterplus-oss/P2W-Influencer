@@ -4,18 +4,19 @@ const { verifyAdmin } = require('../middleware/auth');
 
 // ─── JOBS ─────────────────────────────────────────────────────────────────
 
-// GET /api/admin/jobs — ดูงานทั้งหมด (รวม cancelled)
 router.get('/jobs', verifyAdmin, async (req, res) => {
-    const result = await pool.query('SELECT * FROM jobs ORDER BY created_at DESC');
-    res.json(result.rows);
+    try {
+        const result = await pool.query('SELECT * FROM jobs ORDER BY created_at DESC');
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'ไม่สามารถโหลดงานได้' });
+    }
 });
 
-// POST /api/admin/jobs — เพิ่มงานใหม่
 router.post('/jobs', verifyAdmin, async (req, res) => {
-    const {
-        code, title, description, content_type, duration,
-        deadline, location, channels, budget, requirements, contact_note
-    } = req.body;
+    const { code, title, description, content_type, duration,
+            deadline, location, channels, budget, requirements, contact_note } = req.body;
     if (!code || !title) return res.status(400).json({ error: 'ต้องมี code และ title' });
     try {
         const result = await pool.query(
@@ -35,7 +36,6 @@ router.post('/jobs', verifyAdmin, async (req, res) => {
     }
 });
 
-// PATCH /api/admin/jobs/:id — อัพเดทสถานะหรือข้อมูลงาน
 router.patch('/jobs/:id', verifyAdmin, async (req, res) => {
     const allowed = ['title','description','content_type','duration','deadline',
                      'location','channels','budget','requirements','contact_note','status'];
@@ -64,35 +64,47 @@ router.patch('/jobs/:id', verifyAdmin, async (req, res) => {
     }
 });
 
-// DELETE /api/admin/jobs/:id — ลบงาน
 router.delete('/jobs/:id', verifyAdmin, async (req, res) => {
-    const result = await pool.query('DELETE FROM jobs WHERE id = $1 RETURNING id', [req.params.id]);
-    if (!result.rows[0]) return res.status(404).json({ error: 'ไม่พบงานนี้' });
-    res.json({ message: 'ลบงานสำเร็จ' });
+    try {
+        const result = await pool.query('DELETE FROM jobs WHERE id = $1 RETURNING id', [req.params.id]);
+        if (!result.rows[0]) return res.status(404).json({ error: 'ไม่พบงานนี้' });
+        res.json({ message: 'ลบงานสำเร็จ' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'เกิดข้อผิดพลาด' });
+    }
 });
 
 // ─── CREATORS ─────────────────────────────────────────────────────────────
 
-// GET /api/admin/creators — ดู creator ทั้งหมด
 router.get('/creators', verifyAdmin, async (req, res) => {
-    const result = await pool.query(
-        'SELECT id, name, email, phone, platforms, followers, category, status, created_at FROM creators ORDER BY created_at DESC'
-    );
-    res.json(result.rows);
+    try {
+        const result = await pool.query(
+            'SELECT id, name, email, phone, platforms, followers, category, status, created_at FROM creators ORDER BY created_at DESC'
+        );
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'ไม่สามารถโหลด creator ได้' });
+    }
 });
 
-// PATCH /api/admin/creators/:id — อนุมัติ / reject creator
 router.patch('/creators/:id', verifyAdmin, async (req, res) => {
     const { status } = req.body;
     if (!['approved','rejected','pending'].includes(status)) {
         return res.status(400).json({ error: 'status ต้องเป็น approved / rejected / pending' });
     }
-    const result = await pool.query(
-        'UPDATE creators SET status = $1 WHERE id = $2 RETURNING id, name, email, status',
-        [status, req.params.id]
-    );
-    if (!result.rows[0]) return res.status(404).json({ error: 'ไม่พบ creator นี้' });
-    res.json(result.rows[0]);
+    try {
+        const result = await pool.query(
+            'UPDATE creators SET status = $1 WHERE id = $2 RETURNING id, name, email, status',
+            [status, req.params.id]
+        );
+        if (!result.rows[0]) return res.status(404).json({ error: 'ไม่พบ creator นี้' });
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'เกิดข้อผิดพลาด' });
+    }
 });
 
 module.exports = router;

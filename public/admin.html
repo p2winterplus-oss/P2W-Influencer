@@ -49,6 +49,14 @@
     <div class="absolute inset-0 grid-bg opacity-50"></div>
 </div>
 
+<!-- Theme toggle (login page) -->
+<div class="fixed top-4 right-4 z-50">
+    <button id="theme-toggle-login" class="w-9 h-9 flex items-center justify-center border dark:border-white/[.08] border-black/[.08] rounded-sm dark:text-zinc-400 text-zinc-600 hover:text-bronze dark:bg-[#0D0D0C]/80 bg-[#F9F8F6]/80 backdrop-blur-sm">
+        <i class="fa-solid fa-sun hidden" id="tl-sun"></i>
+        <i class="fa-solid fa-moon" id="tl-moon"></i>
+    </button>
+</div>
+
 <!-- ════════════ ADMIN LOGIN ════════════ -->
 <div id="admin-login" class="relative z-10 min-h-screen flex items-center justify-center px-5">
     <div class="w-full max-w-sm">
@@ -68,7 +76,7 @@
                     <i class="fa-solid fa-unlock"></i> เข้าระบบ Admin
                 </button>
                 <div id="admin-login-err" class="hidden text-center py-2.5 border border-red-500/40 bg-red-500/[.07] rounded-sm mt-3">
-                    <p class="font-mono text-xs text-red-400 font-bold">Admin Key ไม่ถูกต้อง</p>
+                    <p id="admin-login-err-msg" class="font-mono text-xs text-red-400 font-bold"></p>
                 </div>
             </div>
         </div>
@@ -86,10 +94,14 @@
                 <span class="font-serif font-black dark:text-gray-50 text-gray-900 text-sm">P2W ADMIN</span>
                 <span class="font-mono text-[9px] dark:text-zinc-600 text-zinc-400 tracking-widest hidden sm:block">INTERPLUS</span>
             </div>
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2.5">
                 <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
-                <span class="font-mono text-[10px] dark:text-zinc-400 text-zinc-600">ONLINE</span>
-                <button onclick="adminLogout()" class="font-mono text-[10px] tracking-wider dark:text-zinc-500 text-zinc-500 hover:text-red-400 border dark:border-white/[.08] border-black/[.08] rounded-sm px-3 py-1.5 ml-2">
+                <span class="font-mono text-[10px] dark:text-zinc-400 text-zinc-600 hidden sm:block">ONLINE</span>
+                <button id="theme-toggle-dash" class="w-8 h-8 flex items-center justify-center border dark:border-white/[.08] border-black/[.08] rounded-sm dark:text-zinc-400 text-zinc-600 hover:text-bronze">
+                    <i class="fa-solid fa-sun hidden" id="td-sun"></i>
+                    <i class="fa-solid fa-moon" id="td-moon"></i>
+                </button>
+                <button onclick="adminLogout()" class="font-mono text-[10px] tracking-wider dark:text-zinc-500 text-zinc-500 hover:text-red-400 border dark:border-white/[.08] border-black/[.08] rounded-sm px-3 py-1.5">
                     <i class="fa-solid fa-right-from-bracket mr-1"></i>ออก
                 </button>
             </div>
@@ -249,16 +261,31 @@
 <div id="toasts" class="fixed bottom-6 right-5 z-[200] flex flex-col gap-2 max-w-xs pointer-events-none"></div>
 
 <script>
+// ─── Theme ────────────────────────────────────────────────────
+(function(){ applyTheme(localStorage.getItem('p2w-review-theme')||'dark'); })();
+function applyTheme(t){
+    document.documentElement.classList.toggle('dark', t==='dark');
+    ['tl-sun','td-sun'].forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.toggle('hidden', t==='dark'); });
+    ['tl-moon','td-moon'].forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.toggle('hidden', t!=='dark'); });
+    localStorage.setItem('p2w-review-theme', t);
+}
+function toggleTheme(){ applyTheme(document.documentElement.classList.contains('dark')?'light':'dark'); }
+document.getElementById('theme-toggle-login').onclick = toggleTheme;
+document.addEventListener('DOMContentLoaded', ()=>{
+    const d = document.getElementById('theme-toggle-dash');
+    if(d) d.onclick = toggleTheme;
+});
+
 // ─── Admin Auth ───────────────────────────────────────────────
 let adminKey = localStorage.getItem('p2w-admin-key') || '';
 
-if(adminKey) showDash(); // auto-login if key saved
+if(adminKey) showDash();
 
 async function adminLogin(){
     const key = document.getElementById('admin-key-input').value.trim();
     if(!key) return;
-    const errEl = document.getElementById('admin-login-err');
-    const errMsg = errEl.querySelector('p');
+    const errEl  = document.getElementById('admin-login-err');
+    const errMsg = document.getElementById('admin-login-err-msg');
     errEl.classList.add('hidden');
     try {
         const res = await fetch('/api/admin/jobs', { headers:{ 'x-admin-key': key } });
@@ -266,8 +293,11 @@ async function adminLogin(){
             adminKey = key;
             localStorage.setItem('p2w-admin-key', key);
             showDash();
-        } else {
+        } else if(res.status === 403){
             errMsg.textContent = 'Admin Key ไม่ถูกต้อง';
+            errEl.classList.remove('hidden');
+        } else {
+            errMsg.textContent = `Server error (${res.status}) — กรุณาลองใหม่`;
             errEl.classList.remove('hidden');
         }
     } catch {
