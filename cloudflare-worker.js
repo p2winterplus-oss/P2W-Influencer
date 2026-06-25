@@ -1,12 +1,7 @@
 // Cloudflare Worker — P2W INTERPLUS Path Router
-// Route: p2winterplus.com/*
-// Deploy ที่: Cloudflare Dashboard → Workers & Pages → Create Worker
+// Route: p2winterplus.com/influ*
 
-// GitHub Pages URL (หลัง enable GitHub Pages จาก docs/ folder)
 const GITHUB_PAGES = 'https://p2winterplus-oss.github.io/P2W-Influencer'
-
-// หน้า + asset ที่อยู่ใน Review (internal links จะใช้ absolute path /xxx)
-const REVIEW_PAGES = ['/post-job.html', '/admin.html', '/logo.png']
 
 export default {
   async fetch(request) {
@@ -19,21 +14,18 @@ export default {
       redirect: 'follow',
     }
 
-    // /review หรือ /review/* → GitHub Pages (ตัด prefix /review ออก)
-    if (path === '/review' || path.startsWith('/review/')) {
-      const stripped = path === '/review' ? '/' : path.slice('/review'.length)
+    // /influ (ไม่มี /) → redirect ไป /influ/ เพื่อให้ relative path ของรูปทำงานถูก
+    if (path === '/influ') {
+      return Response.redirect(url.origin + '/influ/', 301)
+    }
+
+    // /influ/* → GitHub Pages (ตัด prefix /influ ออก)
+    if (path.startsWith('/influ/')) {
+      const stripped = path.slice('/influ'.length)
       return fetch(new Request(GITHUB_PAGES + stripped + url.search, init))
     }
 
-    // หน้าและรูปที่ index.html อ้างถึงด้วย absolute path
-    const isPage  = REVIEW_PAGES.includes(path)
-    const isAsset = /^\/p2w-\d+\.png$/.test(path)
-
-    if (isPage || isAsset) {
-      return fetch(new Request(GITHUB_PAGES + path + url.search, init))
-    }
-
-    // อื่นๆ ทั้งหมด → หน้าหลัก (GitHub Pages P2W-Main)
+    // อื่นๆ → หน้าหลัก
     return fetch(request)
   },
 }
