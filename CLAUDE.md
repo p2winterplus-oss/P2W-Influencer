@@ -7,68 +7,44 @@
 แพลตฟอร์มสำหรับ Creator/Influencer — รับงานรีวิวสินค้า, งาน Content, งานทั่วไป
 Admin โพสต์งาน → Creator สมัคร/login → ดูงานที่เปิดรับ → รับงาน
 
-- **Live URL**: https://p2winterplus.com (Railway)
+- **Live URL**: https://p2winterplus.com/influ (GitHub Pages via Cloudflare Worker)
 - **Repo**: https://github.com/p2winterplus-oss/P2W-Influencer
-- **Hosted**: Railway (auto-deploy จาก GitHub main branch)
-- **Stack**: Node.js + Express + PostgreSQL (Railway) + HTML/Tailwind CDN frontend
+- **Hosted**: GitHub Pages (serve จาก `docs/` folder) — ฟรี
+- **Stack**: Static HTML/Tailwind CDN + Google Apps Script (Sheets backend)
 
 ## File Structure
 ```
 /
-├── server.js           — Express app entry point
-├── package.json
-├── db/
-│   ├── index.js        — PostgreSQL pool (pg)
-│   └── schema.sql      — CREATE TABLE creators, jobs
-├── routes/
-│   ├── auth.js         — POST /api/auth/register, /login, /me
-│   ├── jobs.js         — GET /api/jobs (creator: ดูงาน)
-│   └── admin.js        — Admin CRUD jobs + creators (x-admin-key header)
-├── middleware/
-│   └── auth.js         — JWT verify middleware
-└── public/             — Static files served by Express
-    ├── index.html      — หน้าแรก (Landing page)
-    ├── jobs.html       — Creator portal (login + ดูงาน)
-    ├── register.html   — สมัครสมาชิก Creator
-    ├── admin.html      — Admin dashboard (ซ่อน)
-    ├── logo.png
-    └── p2w-01.png … p2w-10.png  — Creator/product photos ใช้ใน index.html
+├── docs/               — Static files (GitHub Pages serve จาก folder นี้)
+│   ├── index.html      — หน้าแรก (Landing page)
+│   ├── post-job.html   — หน้าฝากงาน (form → Google Sheets)
+│   ├── admin.html      — Admin dashboard (อ่าน Sheets)
+│   ├── logo.png
+│   └── p2w-01.png … p2w-10.png
+├── cloudflare-worker.js — Worker code (route /influ* → GitHub Pages)
+└── apps-script.js      — Reference code สำหรับ Google Apps Script
 ```
 
-## API Routes
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| POST | /api/auth/register | - | สมัคร Creator |
-| POST | /api/auth/login | - | Creator login → JWT |
-| GET | /api/auth/me | JWT | ดูข้อมูลตัวเอง |
-| GET | /api/jobs | JWT | Creator ดูงานทั้งหมด |
-| GET | /api/admin/jobs | x-admin-key | Admin ดูงาน |
-| POST | /api/admin/jobs | x-admin-key | Admin เพิ่มงาน |
-| PATCH | /api/admin/jobs/:id | x-admin-key | Admin แก้งาน |
-| DELETE | /api/admin/jobs/:id | x-admin-key | Admin ลบงาน |
-| GET | /api/admin/creators | x-admin-key | Admin ดู creators |
-| PATCH | /api/admin/creators/:id | x-admin-key | Admin อนุมัติ/reject |
-| GET | /api/health | - | Health check |
+## Backend: Google Apps Script
+- **URL**: `https://script.google.com/macros/s/AKfycbz6ya72gdmELmCECrO28zACTdoVLcchVJXOoluHpjPTKsZnCRmYkRk5B74vvD57jHLB/exec`
+- **Sheet**: "P2W Visitors" (Google Sheets) — มี 2 tabs: Visitors + Jobs
 
-## Database Schema
-- **creators**: id, name, email, phone, password(bcrypt), platforms[], followers, category, status(pending/approved/rejected), created_at
-- **jobs**: id, code(P2W-001), title, description, content_type[], duration, deadline, location, channels[], budget, requirements, contact_note, status(open/urgent/very_urgent/taken/completed/cancelled), created_at, updated_at
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | type=visitor | บันทึกผู้เยี่ยมชม |
+| POST | type=job | บันทึกงานที่ฝาก |
+| POST | type=updateStatus | อัพเดทสถานะงาน (ต้องมี key) |
+| GET | ?action=jobs&key=... | Admin ดูรายการงาน |
+| GET | ?action=visitors&key=... | Admin ดูผู้เยี่ยมชม |
 
-## Auth System
-- Creator: JWT (7 วัน) — `Authorization: Bearer <token>`
-- Admin: `x-admin-key` header — ตรวจกับ `process.env.ADMIN_KEY`
+## Admin Auth
+- Key: `p2wAdmin2026` (เก็บใน localStorage ฝั่ง client)
+- Validate โดย Apps Script (return error:'unauthorized' ถ้า key ผิด)
 
-## Railway Environment Variables
-| Variable | Value |
-|----------|-------|
-| DATABASE_URL | postgresql://postgres:...@postgres.railway.internal:5432/railway |
-| ADMIN_KEY | p2wAdmin2026 |
-| PORT | (Railway inject อัตโนมัติ) |
-
-## SSL Note
-- Internal Railway hostname (`postgres.railway.internal`) → SSL disabled
-- External proxy URL → SSL enabled
-- Logic: `(DATABASE_URL).includes('.railway.internal') ? false : { rejectUnauthorized: false }`
+## Cloudflare Worker
+- Route: `p2winterplus.com/influ*`
+- `/influ` → redirect 301 → `/influ/`
+- `/influ/*` → proxy ไป GitHub Pages (strip prefix)
 
 ## Design System
 - **Primary color**: Bronze `#C5A880`
@@ -134,6 +110,5 @@ index.html (หน้าแรก)
   - try/catch ใน async routes ทุก route
 
 ### TODO ❌
-- ลบ `/api/debug-key` endpoint ออกจาก server.js (ค้างไว้ชั่วคราว)
-- เพิ่ม Visitor tracker บน jobs.html และ register.html
-- ซื้อโดเมน p2winterplus.com แล้ว point ไป Railway
+- ส่วนอัพเดทสถานะงานใหม่ๆ → เปลี่ยนเป็น Facebook logo/link (รอ link จากเจ้าของ)
+- เพิ่ม Visitor tracker บน post-job.html
