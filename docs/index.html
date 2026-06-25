@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="th" class="scroll-smooth dark">
 <head>
     <meta charset="UTF-8">
@@ -78,6 +78,7 @@
         .fade-up.visible { opacity: 1; transform: translateY(0); }
 
         /* ─── Button bronze ─── */
+        .dark .logo-img { filter:drop-shadow(0 0 1px rgba(197,168,128,.9)) drop-shadow(0 0 1px rgba(197,168,128,.6)); }
         .btn-bronze {
             background: #C5A880; color: #0D0D0C;
             font-weight: 700; letter-spacing: 0.15em;
@@ -91,7 +92,9 @@
         .card-glow:hover { border-color: rgba(197,168,128,0.45) !important; box-shadow: 0 0 32px rgba(197,168,128,0.08); }
 
         /* ─── Pricing popular ─── */
-        .pricing-popular { border-color: #C5A880 !important; box-shadow: 0 0 32px rgba(197,168,128,0.15); }
+        .pricing-popular { border-color: rgba(197,168,128,0.35) !important; box-shadow: 0 0 24px rgba(197,168,128,0.1); transition: box-shadow .4s; }
+        .pricing-popular:hover { box-shadow: 0 0 48px rgba(197,168,128,0.28) !important; border-color: rgba(197,168,128,0.7) !important; }
+        #popular-ring { border-radius:2px; position:absolute; inset:0; pointer-events:none; z-index:0; }
 
         /* ─── Nav underline ─── */
         .nav-btn { position: relative; }
@@ -146,10 +149,10 @@
 
             <!-- Logo -->
             <a href="/" class="flex items-center gap-3 group shrink-0">
-                <img src="logo.png" alt="P2W INTERPLUS" class="h-10 w-auto" onerror="this.style.display='none'">
+                <img src="logo.png" alt="P2W INTERPLUS" class="logo-img h-14 w-auto" onerror="this.style.display='none'">
                 <div>
                     <div class="font-serif text-base md:text-lg font-black text-bronze-gradient tracking-tight leading-tight">P2W INTERPLUS</div>
-                    <div class="font-mono text-[8px] md:text-[9px] tracking-[0.25em] dark:text-[#C5A880]/55 text-[#8B6430]/55 uppercase font-bold">REVIEW &amp; BROKER</div>
+                    <div class="font-mono text-[8px] md:text-[9px] tracking-[0.25em] dark:text-[#C5A880]/55 text-[#8B6430]/55 uppercase font-bold">CONTENTS &amp; INFLUENCER</div>
                 </div>
             </a>
 
@@ -172,9 +175,9 @@
                     <i class="fa-solid fa-sun hidden" id="icon-sun"></i>
                     <i class="fa-solid fa-moon"       id="icon-moon"></i>
                 </button>
-                <button onclick="openContact()" class="btn-bronze hidden sm:block px-5 py-2.5 font-mono text-[11px] rounded-sm">
-                    ติดต่อเราเลย
-                </button>
+                <a href="/post-job.html" class="btn-bronze hidden sm:flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] rounded-sm">
+                    <i class="fa-solid fa-briefcase"></i> ฝากงาน
+                </a>
             </div>
         </div>
     </header>
@@ -184,6 +187,11 @@
 
         <!-- ══════════════════════════ HERO ══════════════════════════ -->
         <section id="hero" class="relative min-h-[calc(100vh-80px)] flex flex-col items-center justify-center text-center px-5 border-b dark:border-white/[0.05] border-black/[0.05] overflow-hidden">
+            <!-- Hero background image -->
+            <div class="absolute inset-0 z-0">
+                <img src="p2w-10.png" alt="" aria-hidden="true" loading="eager" class="w-full h-full object-cover object-center opacity-[0.28]">
+                <div class="absolute inset-0 dark:bg-[#0D0D0C]/60 bg-[#F9F8F6]/65"></div>
+            </div>
             <div class="max-w-4xl relative z-10">
 
                 <!-- Badge -->
@@ -193,9 +201,9 @@
                 </div>
 
                 <!-- Headline -->
-                <h1 class="fade-up d1 font-serif text-4xl sm:text-6xl md:text-7xl font-black leading-[1.1] mb-6 tracking-tight dark:text-gray-50 text-gray-900">
+                <h1 class="fade-up d1 font-serif text-4xl sm:text-6xl md:text-7xl font-black leading-[1.45] mb-6 tracking-tight dark:text-gray-50 text-gray-900">
                     รีวิวที่คุณ<br>
-                    <span class="text-bronze-gradient italic">วางใจได้</span>
+                    <span class="text-bronze-gradient italic" style="display:inline-block;padding:0.35em 0.25em 0.15em 0.05em;overflow:visible">วางใจได้</span>
                 </h1>
 
                 <!-- Sub -->
@@ -224,9 +232,9 @@
 
                 <!-- CTAs -->
                 <div class="fade-up d3 flex flex-col sm:flex-row gap-4 justify-center items-center max-w-xs sm:max-w-none mx-auto">
-                    <button onclick="openContact()" class="btn-bronze w-full sm:w-auto px-12 py-4 font-mono text-xs rounded-sm">
-                        ติดต่อรับงาน &nbsp;→
-                    </button>
+                    <a href="/post-job.html" class="btn-bronze w-full sm:w-auto px-12 py-4 font-mono text-xs rounded-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-briefcase"></i> ฝากงานกับเรา
+                    </a>
                     <button onclick="scrollTo('portfolio')" class="w-full sm:w-auto border dark:border-[rgba(197,168,128,0.4)] border-[rgba(139,100,48,0.4)] dark:text-bronze text-bronze-dark px-10 py-4 font-mono text-xs font-bold tracking-widest rounded-sm dark:hover:bg-[rgba(197,168,128,0.07)] hover:bg-[rgba(197,168,128,0.07)]">
                         <i class="fa-solid fa-eye mr-2"></i>ดูตัวอย่างงาน
                     </button>
@@ -260,12 +268,31 @@
                     </div>
                 </div>
 
+                <!-- Image strip — หลัง header -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-14 fade-up">
+                    <div class="relative aspect-video overflow-hidden rounded-sm border dark:border-white/[.08] border-black/[.08] group">
+                        <img src="p2w-01.png" alt="Content Creator Workspace" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.05]">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#0D0D0C]/60 to-transparent"></div>
+                        <div class="absolute bottom-3 left-3 font-mono text-[9px] tracking-widest text-bronze/90 font-bold">PLAN · SHOOT · CREATE</div>
+                    </div>
+                    <div class="relative aspect-video overflow-hidden rounded-sm border dark:border-white/[.08] border-black/[.08] group">
+                        <img src="p2w-06.png" alt="Travel Content Team" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.05]">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#0D0D0C]/60 to-transparent"></div>
+                        <div class="absolute bottom-3 left-3 font-mono text-[9px] tracking-widest text-bronze/90 font-bold">ON LOCATION</div>
+                    </div>
+                </div>
+
                 <!-- 3 Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
                     <!-- SRV-01 -->
                     <div class="fade-up glass-card p-8 rounded-sm border dark:border-white/[0.08] border-black/[0.08] card-glow group flex flex-col justify-between relative overflow-hidden">
                         <div class="absolute top-4 right-4 font-mono text-[9px] dark:text-white/[0.12] text-black/[0.12] font-bold">REF: SRV-01</div>
+                        <!-- Card image -->
+                        <div class="relative -mx-8 -mt-8 mb-6 overflow-hidden" style="aspect-ratio:16/7">
+                            <img src="p2w-05.png" alt="Product Photography Studio" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.06]">
+                            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/70"></div>
+                        </div>
                         <div>
                             <div class="w-14 h-14 flex items-center justify-center border dark:border-white/[0.08] border-black/[0.08] rounded-sm mb-8 bg-[rgba(197,168,128,0.08)] group-hover:scale-110 transition-transform duration-300">
                                 <i class="fa-solid fa-star text-bronze text-xl"></i>
@@ -296,6 +323,11 @@
                     <!-- SRV-02 -->
                     <div class="fade-up d1 glass-card p-8 rounded-sm border dark:border-white/[0.08] border-black/[0.08] card-glow group flex flex-col justify-between relative overflow-hidden">
                         <div class="absolute top-4 right-4 font-mono text-[9px] dark:text-white/[0.12] text-black/[0.12] font-bold">REF: SRV-02</div>
+                        <!-- Card image -->
+                        <div class="relative -mx-8 -mt-8 mb-6 overflow-hidden" style="aspect-ratio:16/7">
+                            <img src="p2w-07.png" alt="Outdoor Product with Scenery" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.06]">
+                            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/70"></div>
+                        </div>
                         <div>
                             <div class="w-14 h-14 flex items-center justify-center border dark:border-white/[0.08] border-black/[0.08] rounded-sm mb-8 bg-[rgba(197,168,128,0.08)] group-hover:scale-110 transition-transform duration-300">
                                 <i class="fa-solid fa-utensils text-bronze text-xl"></i>
@@ -354,6 +386,25 @@
                     </div>
 
                 </div>
+
+                <!-- Image strip — หลัง service cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-10 fade-up">
+                    <div class="relative overflow-hidden rounded-sm border dark:border-white/[.08] border-black/[.08] group" style="aspect-ratio:16/7">
+                        <img src="p2w-05.png" alt="Product Photography Studio" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.05]">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#0D0D0C]/65 to-transparent"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <span class="font-mono text-[9px] px-2.5 py-1 bg-bronze text-[#0D0D0C] font-bold tracking-widest">PRODUCT SHOOT</span>
+                        </div>
+                    </div>
+                    <div class="relative overflow-hidden rounded-sm border dark:border-white/[.08] border-black/[.08] group" style="aspect-ratio:16/7">
+                        <img src="p2w-03.png" alt="Outdoor Product Review" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.05]">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#0D0D0C]/65 to-transparent"></div>
+                        <div class="absolute bottom-4 left-4">
+                            <span class="font-mono text-[9px] px-2.5 py-1 bg-bronze text-[#0D0D0C] font-bold tracking-widest">OUTDOOR REVIEW</span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </section>
 
@@ -380,57 +431,57 @@
                     <!-- P1 -->
                     <div class="min-w-[280px] sm:min-w-[400px] group cursor-pointer shrink-0" onclick="openPortfolio(0)">
                         <div class="relative aspect-video mb-4 overflow-hidden border dark:border-white/10 border-black/10 rounded-sm group-hover:border-bronze/40 duration-500 shadow-lg">
-                            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop" alt="Tech Review" loading="lazy" class="w-full h-full object-cover group-hover:scale-[1.08]">
+                            <img src="p2w-02.png" alt="Live Streaming Beauty Review" loading="lazy" class="w-full h-full object-cover group-hover:scale-[1.08]">
                             <div class="absolute inset-0 bg-gradient-to-t from-[#0D0D0C]/90 via-[#0D0D0C]/20 to-transparent"></div>
                             <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-                                <span class="font-mono text-[10px] px-2.5 py-0.5 font-bold tracking-widest bg-bronze text-[#0D0D0C]">TECH</span>
-                                <span class="font-mono text-[10px] dark:text-zinc-400 text-zinc-300 font-bold bg-black/55 px-2 py-0.5 backdrop-blur-sm">12K views</span>
+                                <span class="font-mono text-[10px] px-2.5 py-0.5 font-bold tracking-widest bg-bronze text-[#0D0D0C]">LIVE</span>
+                                <span class="font-mono text-[10px] dark:text-zinc-400 text-zinc-300 font-bold bg-black/55 px-2 py-0.5 backdrop-blur-sm">256 viewers</span>
                             </div>
                         </div>
-                        <h3 class="dark:text-gray-50 text-gray-900 hover:text-bronze font-serif text-lg font-black">TECH_REVIEW_X1</h3>
-                        <p class="text-xs dark:text-zinc-500 text-zinc-500 font-mono mt-1 opacity-70">PRODUCT_REVIEW</p>
+                        <h3 class="dark:text-gray-50 text-gray-900 hover:text-bronze font-serif text-lg font-black">LIVE_CONTENT_01</h3>
+                        <p class="text-xs dark:text-zinc-500 text-zinc-500 font-mono mt-1 opacity-70">LIVE_STREAMING</p>
                     </div>
 
                     <!-- P2 -->
                     <div class="min-w-[280px] sm:min-w-[400px] group cursor-pointer shrink-0" onclick="openPortfolio(1)">
                         <div class="relative aspect-video mb-4 overflow-hidden border dark:border-white/10 border-black/10 rounded-sm group-hover:border-bronze/40 duration-500 shadow-lg">
-                            <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=800&auto=format&fit=crop" alt="Food Review" loading="lazy" class="w-full h-full object-cover group-hover:scale-[1.08]">
+                            <img src="p2w-04.png" alt="Solo Live Creator Good Vibes" loading="lazy" class="w-full h-full object-cover group-hover:scale-[1.08]">
                             <div class="absolute inset-0 bg-gradient-to-t from-[#0D0D0C]/90 via-[#0D0D0C]/20 to-transparent"></div>
                             <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-                                <span class="font-mono text-[10px] px-2.5 py-0.5 font-bold tracking-widest bg-bronze text-[#0D0D0C]">FOOD</span>
-                                <span class="font-mono text-[10px] dark:text-zinc-400 text-zinc-300 font-bold bg-black/55 px-2 py-0.5 backdrop-blur-sm">8.5K views</span>
+                                <span class="font-mono text-[10px] px-2.5 py-0.5 font-bold tracking-widest bg-bronze text-[#0D0D0C]">LIVE</span>
+                                <span class="font-mono text-[10px] dark:text-zinc-400 text-zinc-300 font-bold bg-black/55 px-2 py-0.5 backdrop-blur-sm">128 viewers</span>
                             </div>
                         </div>
-                        <h3 class="dark:text-gray-50 text-gray-900 hover:text-bronze font-serif text-lg font-black">FOOD_REPORT_01</h3>
-                        <p class="text-xs dark:text-zinc-500 text-zinc-500 font-mono mt-1 opacity-70">RESTAURANT_REVIEW</p>
+                        <h3 class="dark:text-gray-50 text-gray-900 hover:text-bronze font-serif text-lg font-black">LIVE_CREATOR_01</h3>
+                        <p class="text-xs dark:text-zinc-500 text-zinc-500 font-mono mt-1 opacity-70">CONTENT_CREATOR</p>
                     </div>
 
                     <!-- P3 -->
                     <div class="min-w-[280px] sm:min-w-[400px] group cursor-pointer shrink-0" onclick="openPortfolio(2)">
                         <div class="relative aspect-video mb-4 overflow-hidden border dark:border-white/10 border-black/10 rounded-sm group-hover:border-bronze/40 duration-500 shadow-lg">
-                            <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800&auto=format&fit=crop" alt="Hotel Review" loading="lazy" class="w-full h-full object-cover group-hover:scale-[1.08]">
+                            <img src="p2w-07.png" alt="Product Shoot Outdoor" loading="lazy" class="w-full h-full object-cover group-hover:scale-[1.08]">
                             <div class="absolute inset-0 bg-gradient-to-t from-[#0D0D0C]/90 via-[#0D0D0C]/20 to-transparent"></div>
                             <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-                                <span class="font-mono text-[10px] px-2.5 py-0.5 font-bold tracking-widest bg-bronze text-[#0D0D0C]">HOTEL</span>
-                                <span class="font-mono text-[10px] dark:text-zinc-400 text-zinc-300 font-bold bg-black/55 px-2 py-0.5 backdrop-blur-sm">15K views</span>
+                                <span class="font-mono text-[10px] px-2.5 py-0.5 font-bold tracking-widest bg-bronze text-[#0D0D0C]">PRODUCT</span>
+                                <span class="font-mono text-[10px] dark:text-zinc-400 text-zinc-300 font-bold bg-black/55 px-2 py-0.5 backdrop-blur-sm">F2.8 · ISO100</span>
                             </div>
                         </div>
-                        <h3 class="dark:text-gray-50 text-gray-900 hover:text-bronze font-serif text-lg font-black">STAY_REVIEW_PRO</h3>
-                        <p class="text-xs dark:text-zinc-500 text-zinc-500 font-mono mt-1 opacity-70">HOTEL_REVIEW</p>
+                        <h3 class="dark:text-gray-50 text-gray-900 hover:text-bronze font-serif text-lg font-black">PRODUCT_SHOOT_01</h3>
+                        <p class="text-xs dark:text-zinc-500 text-zinc-500 font-mono mt-1 opacity-70">PRODUCT_REVIEW</p>
                     </div>
 
                     <!-- P4 -->
                     <div class="min-w-[280px] sm:min-w-[400px] group cursor-pointer shrink-0" onclick="openPortfolio(3)">
                         <div class="relative aspect-video mb-4 overflow-hidden border dark:border-white/10 border-black/10 rounded-sm group-hover:border-bronze/40 duration-500 shadow-lg">
-                            <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?q=80&w=800&auto=format&fit=crop" alt="Broker" loading="lazy" class="w-full h-full object-cover group-hover:scale-[1.08]">
+                            <img src="p2w-09.png" alt="Luxury Studio Shoot" loading="lazy" class="w-full h-full object-cover group-hover:scale-[1.08]">
                             <div class="absolute inset-0 bg-gradient-to-t from-[#0D0D0C]/90 via-[#0D0D0C]/20 to-transparent"></div>
                             <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-                                <span class="font-mono text-[10px] px-2.5 py-0.5 font-bold tracking-widest bg-bronze text-[#0D0D0C]">BROKER</span>
-                                <span class="font-mono text-[10px] dark:text-zinc-400 text-zinc-300 font-bold bg-black/55 px-2 py-0.5 backdrop-blur-sm">3K views</span>
+                                <span class="font-mono text-[10px] px-2.5 py-0.5 font-bold tracking-widest bg-bronze text-[#0D0D0C]">STUDIO</span>
+                                <span class="font-mono text-[10px] dark:text-zinc-400 text-zinc-300 font-bold bg-black/55 px-2 py-0.5 backdrop-blur-sm">BRAND CONTENT</span>
                             </div>
                         </div>
-                        <h3 class="dark:text-gray-50 text-gray-900 hover:text-bronze font-serif text-lg font-black">DEAL_CLOSED_V1</h3>
-                        <p class="text-xs dark:text-zinc-500 text-zinc-500 font-mono mt-1 opacity-70">BROKER_SUCCESS</p>
+                        <h3 class="dark:text-gray-50 text-gray-900 hover:text-bronze font-serif text-lg font-black">STUDIO_SHOT_01</h3>
+                        <p class="text-xs dark:text-zinc-500 text-zinc-500 font-mono mt-1 opacity-70">BRAND_CONTENT</p>
                     </div>
 
                 </div>
@@ -450,6 +501,15 @@
                     <p class="dark:text-zinc-400 text-zinc-600 max-w-md mx-auto text-sm leading-relaxed">
                         เลือกแพ็คเกจที่ตรงกับงานของคุณ หรือติดต่อเพื่อออกแบบแพ็คเกจเฉพาะ
                     </p>
+                </div>
+
+                <!-- Image banner หลัง pricing header -->
+                <div class="relative max-w-4xl mx-auto mb-12 overflow-hidden rounded-sm border dark:border-white/[.08] border-black/[.08] fade-up" style="aspect-ratio:21/6">
+                    <img src="p2w-08.png" alt="Professional Studio Shoot" loading="lazy" class="w-full h-full object-cover object-center">
+                    <div class="absolute inset-0 bg-gradient-to-r from-[#0D0D0C]/70 via-transparent to-[#0D0D0C]/70"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="font-mono text-[10px] tracking-[0.3em] text-bronze/80 font-bold">[ PROFESSIONAL GRADE ]</span>
+                    </div>
                 </div>
 
                 <!-- Cards -->
@@ -476,7 +536,9 @@
                     </div>
 
                     <!-- STANDARD (popular) -->
-                    <div class="fade-up d1 glass-card p-8 rounded-sm border pricing-popular flex flex-col relative">
+                    <div class="fade-up d1 relative" style="padding:1px;border-radius:2px">
+                    <div id="popular-ring"></div>
+                    <div class="glass-card p-8 rounded-sm border pricing-popular flex flex-col relative" style="z-index:1">
                         <div class="absolute -top-4 left-1/2 -translate-x-1/2">
                             <span class="btn-bronze px-4 py-1 font-mono text-[10px] font-black tracking-widest rounded-sm shadow-lg">&#10022; แนะนำ</span>
                         </div>
@@ -498,6 +560,7 @@
                             เลือกแพ็คเกจนี้
                         </button>
                     </div>
+                    </div><!-- /popular-wrapper -->
 
                     <!-- PREMIUM -->
                     <div class="fade-up d2 glass-card p-8 rounded-sm border dark:border-white/[0.08] border-black/[0.08] card-glow flex flex-col">
@@ -641,7 +704,7 @@
                 <!-- Brand -->
                 <div>
                     <div class="font-serif text-xl dark:text-gray-50 text-gray-900 font-black tracking-tight mb-1">P2W INTERPLUS</div>
-                    <div class="font-mono text-[10px] text-bronze tracking-widest uppercase font-bold mb-4">REVIEW &amp; BROKER SERVICE</div>
+                    <div class="font-mono text-[10px] text-bronze tracking-widest uppercase font-bold mb-4">CONTENTS &amp; INFLUENCER</div>
                     <div class="font-mono text-[10px] dark:text-zinc-600 text-zinc-500 tracking-wider">©2026 P2W INTERPLUS CO.,LTD.</div>
                     <div class="font-mono text-[10px] dark:text-zinc-600 text-zinc-500 tracking-wider mt-1">ALL RIGHTS RESERVED</div>
                 </div>
@@ -676,12 +739,12 @@
             <i class="fa-solid fa-star text-lg"></i>
             <span class="font-mono text-[8px] tracking-widest font-bold">SERVICES</span>
         </button>
-        <button onclick="openContact()"         class="flex flex-col items-center gap-1.5 active:scale-95">
+        <a href="/post-job.html"                class="flex flex-col items-center gap-1.5 active:scale-95">
             <div class="w-12 h-12 btn-bronze rounded-xl flex items-center justify-center -mt-6 shadow-xl">
-                <i class="fa-solid fa-paper-plane text-base"></i>
+                <i class="fa-solid fa-briefcase text-base"></i>
             </div>
-            <span class="font-mono text-[8px] tracking-widest font-bold dark:text-zinc-500 text-zinc-500">ติดต่อ</span>
-        </button>
+            <span class="font-mono text-[8px] tracking-widest font-bold dark:text-zinc-500 text-zinc-500">ฝากงาน</span>
+        </a>
         <button onclick="scrollTo('portfolio')" class="mobile-nav flex flex-col items-center gap-1.5 dark:text-zinc-500 text-zinc-500 hover:text-bronze active:scale-95" data-sec="portfolio">
             <i class="fa-solid fa-folder-open text-lg"></i>
             <span class="font-mono text-[8px] tracking-widest font-bold">PORTFOLIO</span>
@@ -724,10 +787,10 @@
     // PORTFOLIO DATA
     // ──────────────────────────────────────────────────────────
     const PORT = [
-        { badge:'TECH',   title:'TECH_REVIEW_X1',   cat:'PRODUCT_REVIEW',     img:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop', desc:'รีวิวสมาร์ทวอทช์รุ่นใหม่ล่าสุด ทดสอบฟีเจอร์ครบทุกด้านตั้งแต่การติดตามสุขภาพ การแจ้งเตือน ไปจนถึงความทนทานของแบตเตอรี่ พร้อมภาพถ่ายจริงและคะแนนรีวิวในแต่ละด้าน' },
-        { badge:'FOOD',   title:'FOOD_REPORT_01',   cat:'RESTAURANT_REVIEW',  img:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=800&auto=format&fit=crop', desc:'รีวิวร้านอาหาร Fine Dining กลางกรุงเทพฯ ครอบคลุมทั้งรสชาติ การบริการ บรรยากาศ และความคุ้มค่า พร้อมคะแนนแต่ละด้านและข้อแนะนำ' },
-        { badge:'HOTEL',  title:'STAY_REVIEW_PRO',  cat:'HOTEL_REVIEW',       img:'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800&auto=format&fit=crop', desc:'รีวิวโรงแรมหรูระดับ 5 ดาว ทดสอบทุกสิ่งอำนวยความสะดวกตั้งแต่เช็คอินจนเช็คเอาท์ พร้อมภาพถ่ายห้องพักจริงและเปรียบเทียบราคากับมาตรฐาน' },
-        { badge:'BROKER', title:'DEAL_CLOSED_V1',   cat:'BROKER_SUCCESS',     img:'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?q=80&w=800&auto=format&fit=crop', desc:'กรณีศึกษา: เชื่อมโยงผู้ซื้อ-ผู้ขายสินค้าอุตสาหกรรมสำเร็จ ปิดดีลมูลค่า 6 หลักภายในไม่ถึง 2 สัปดาห์ ด้วยการเจรจาและเครือข่ายที่แข็งแกร่ง' },
+        { badge:'LIVE',    title:'LIVE_CONTENT_01',  cat:'LIVE_STREAMING',   img:'p2w-02.png', desc:'Live streaming รีวิวสกินแคร์พร้อมกัน 2 คน อธิบายส่วนผสม วิธีใช้ และผลลัพธ์จริง มียอด viewer กว่า 256 คน พร้อม engagement สูงจากคอมเมนต์ตลอดไลฟ์' },
+        { badge:'LIVE',    title:'LIVE_CREATOR_01',  cat:'CONTENT_CREATOR',  img:'p2w-04.png', desc:'Live streaming รีวิวสินค้า solo creator บรรยากาศสตูดิโอส่วนตัว นำเสนอสินค้าผ่าน storytelling ดึง engagement จากผู้ชมได้ดีมากตลอดการไลฟ์' },
+        { badge:'PRODUCT', title:'PRODUCT_SHOOT_01', cat:'PRODUCT_REVIEW',   img:'p2w-07.png', desc:'ถ่ายภาพสินค้า outdoor บรรยากาศ natural light ริมน้ำ จัด prop และองค์ประกอบภาพให้สอดคล้องกับ brand identity ได้รับภาพ high quality พร้อมใช้' },
+        { badge:'STUDIO',  title:'STUDIO_SHOT_01',   cat:'BRAND_CONTENT',    img:'p2w-09.png', desc:'ถ่ายภาพสินค้า brand content ในสตูดิโอ lighting setup แบบ luxury neutral tone จัด prop และ styling ครบ เหมาะสำหรับใช้ใน social media และสื่อโฆษณา' },
     ];
 
     // ──────────────────────────────────────────────────────────
@@ -931,6 +994,44 @@
                 })
             });
         } catch { /* silent */ }
+    })();
+
+    // ─── Popular ring light animation ───
+    (function(){
+        const ring = document.getElementById('popular-ring');
+        if (!ring) return;
+        let raf, timeout;
+        function runLight(){
+            const dir   = Math.random() > 0.5 ? 1 : -1;
+            const speed = 1.0 + Math.random() * 1.8;          // deg per frame
+            const total = 90 + Math.random() * 220;            // how far to travel
+            let angle   = Math.random() * 360;
+            let traveled = 0;
+            function frame(){
+                angle    += dir * speed;
+                traveled += speed;
+                ring.style.background =
+                    `conic-gradient(from ${angle}deg,` +
+                    `transparent 0%,transparent 33%,` +
+                    `rgba(197,168,128,0.35) 42%,` +
+                    `rgba(255,228,160,0.85) 50%,` +
+                    `rgba(197,168,128,0.35) 58%,` +
+                    `transparent 67%,transparent 100%)`;
+                if (traveled < total) {
+                    raf = requestAnimationFrame(frame);
+                } else {
+                    ring.style.background = 'none';
+                    timeout = setTimeout(runLight, 5000 + Math.random() * 5000);
+                }
+            }
+            raf = requestAnimationFrame(frame);
+        }
+        timeout = setTimeout(runLight, 1500 + Math.random() * 1500);
+        // pause when tab hidden
+        document.addEventListener('visibilitychange', function(){
+            if (document.hidden) { cancelAnimationFrame(raf); clearTimeout(timeout); }
+            else timeout = setTimeout(runLight, 500);
+        });
     })();
     </script>
 

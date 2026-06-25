@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ฝากงาน | P2W INTERPLUS</title>
+    <meta name="description" content="ฝากงานรีวิวสินค้า ถ่ายรูป Live Streaming หรืองาน Content กับทีม P2W INTERPLUS">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        bronze: '#C5A880',
+                        'bronze-light': '#E8C99A',
+                        'bronze-dark': '#8B6430',
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'Georgia', 'serif'],
+                        sans:  ['"Prompt"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Prompt', sans-serif; }
+        .dark body { background-color: #0D0D0C; color: #e4e4e7; }
+        body { background-color: #F9F8F6; color: #27272a; }
+
+        .grid-pattern {
+            background-image:
+                linear-gradient(to right, rgba(197,168,128,0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(197,168,128,0.05) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        .light-grid {
+            background-image:
+                linear-gradient(to right, rgba(0,0,0,0.035) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0,0,0,0.035) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        .scanline {
+            background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.15) 51%);
+            background-size: 100% 4px;
+        }
+        .glass-card { background: rgba(255,255,255,0.72); backdrop-filter: blur(14px); }
+        .dark .glass-card { background: rgba(13,13,12,0.78); }
+        .text-bronze-gradient {
+            background: linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #C5A880);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+        }
+        .btn-bronze {
+            background: #C5A880; color: #0D0D0C;
+            font-weight: 700; letter-spacing: 0.15em;
+            transition: all 0.3s;
+        }
+        .btn-bronze:hover { box-shadow: 0 0 28px rgba(197,168,128,0.5); transform: scale(1.02); }
+        .btn-bronze:active { transform: scale(0.98); }
+        .dark .logo-img { filter:drop-shadow(0 0 1px rgba(197,168,128,.9)) drop-shadow(0 0 1px rgba(197,168,128,.6)); }
+        .fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease-out, transform 0.65s ease-out; }
+        .fade-up.d1 { transition-delay: 0.08s; }
+        .fade-up.d2 { transition-delay: 0.18s; }
+        .fade-up.d3 { transition-delay: 0.28s; }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
+        input:focus, select:focus, textarea:focus { border-color: #C5A880 !important; outline: none; }
+        .cb-item input[type=checkbox]:checked + span { color: #C5A880; }
+        @keyframes toastIn  { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-8px); } }
+        .toast { animation: toastIn 0.3s ease-out; }
+        .toast.out { animation: toastOut 0.3s ease-in forwards; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: rgba(197,168,128,0.3); border-radius: 2px; }
+        *, *::before, *::after {
+            transition-property: background-color, border-color, color;
+            transition-duration: 300ms; transition-timing-function: ease;
+        }
+        button, a { transition: all 0.28s ease !important; }
+        .fade-up { transition: opacity 0.65s ease-out, transform 0.65s ease-out !important; }
+    </style>
+</head>
+
+<body class="min-h-screen relative">
+
+    <!-- BG -->
+    <div class="fixed inset-0 z-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute inset-0 dark:bg-[#0D0D0C] bg-[#F9F8F6]"></div>
+        <div class="absolute inset-0 dark:grid-pattern light-grid opacity-70"></div>
+        <div class="absolute inset-0 scanline opacity-[0.18]"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,rgba(197,168,128,0.07),transparent)]"></div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="fixed top-0 w-full z-50 dark:bg-[#0D0D0C]/88 bg-[#F9F8F6]/88 backdrop-blur-md border-b dark:border-white/[0.07] border-black/[0.07]">
+        <div class="flex justify-between items-center max-w-[1440px] mx-auto px-5 md:px-10 h-16">
+            <a href="/" class="flex items-center gap-2.5">
+                <img src="logo.png" alt="P2W" class="logo-img h-11 w-auto" onerror="this.style.display='none'">
+                <div>
+                    <div class="font-serif text-sm font-black text-bronze leading-tight">P2W INTERPLUS</div>
+                    <div class="font-mono text-[8px] tracking-widest dark:text-bronze/50 text-bronze-dark/55 uppercase">CONTENTS &amp; INFLUENCER</div>
+                </div>
+            </a>
+            <div class="flex items-center gap-2">
+                <button id="theme-toggle" aria-label="toggle theme"
+                    class="border dark:border-white/[.08] border-black/[.08] rounded-sm px-3 py-1.5 text-xs font-mono tracking-widest dark:text-gray-400 text-gray-600">
+                    <i id="sun-icon" class="fa-solid fa-sun hidden"></i>
+                    <i id="moon-icon" class="fa-solid fa-moon hidden"></i>
+                </button>
+                <a href="/" class="border dark:border-white/[.08] border-black/[.08] rounded-sm px-3 py-1.5 text-xs font-mono tracking-widest dark:text-gray-400 text-gray-600">
+                    <i class="fa-solid fa-house mr-1"></i>โฮม
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="relative z-10 pt-28 pb-20 px-5 max-w-2xl mx-auto">
+
+        <!-- Title -->
+        <div class="text-center mb-10 fade-up">
+            <p class="font-mono text-[10px] tracking-[0.3em] text-bronze/70 uppercase mb-3">POST A JOB</p>
+            <h1 class="font-serif text-4xl md:text-5xl font-black leading-[1.2] dark:text-gray-50 text-gray-900 mb-3">
+                ฝากงาน<br>
+                <span class="text-bronze-gradient italic">กับเรา</span>
+            </h1>
+            <p class="text-sm dark:text-gray-400 text-gray-500 leading-relaxed">
+                กรอกรายละเอียดงานที่ต้องการ ทีมงาน P2W จะติดต่อกลับโดยเร็ว
+            </p>
+        </div>
+
+        <!-- Form card -->
+        <div class="glass-card rounded-sm border dark:border-white/[.08] border-black/[.06] p-7 md:p-10 fade-up d1">
+            <form id="job-form" novalidate>
+
+                <!-- ชื่อ / แบรนด์ -->
+                <div class="mb-5">
+                    <label class="block text-xs font-mono tracking-widest text-bronze/80 uppercase mb-2">ชื่อ / แบรนด์ / บริษัท <span class="text-red-400">*</span></label>
+                    <input id="f-name" type="text" placeholder="เช่น บริษัท ตัวอย่าง จำกัด" required
+                        class="w-full bg-transparent border dark:border-white/[.10] border-black/[.12] rounded-sm px-4 py-2.5 text-sm dark:text-gray-200 text-gray-800 placeholder-gray-400">
+                </div>
+
+                <!-- เบอร์โทร -->
+                <div class="mb-5">
+                    <label class="block text-xs font-mono tracking-widest text-bronze/80 uppercase mb-2">เบอร์โทรศัพท์ <span class="text-red-400">*</span></label>
+                    <input id="f-phone" type="tel" placeholder="08X-XXX-XXXX" required
+                        class="w-full bg-transparent border dark:border-white/[.10] border-black/[.12] rounded-sm px-4 py-2.5 text-sm dark:text-gray-200 text-gray-800 placeholder-gray-400">
+                </div>
+
+                <!-- Line / Email -->
+                <div class="mb-5">
+                    <label class="block text-xs font-mono tracking-widest text-bronze/80 uppercase mb-2">Line ID หรือ Email <span class="text-red-400">*</span></label>
+                    <input id="f-contact" type="text" placeholder="@line_id หรือ email@example.com" required
+                        class="w-full bg-transparent border dark:border-white/[.10] border-black/[.12] rounded-sm px-4 py-2.5 text-sm dark:text-gray-200 text-gray-800 placeholder-gray-400">
+                </div>
+
+                <!-- ประเภทงาน -->
+                <div class="mb-5">
+                    <label class="block text-xs font-mono tracking-widest text-bronze/80 uppercase mb-3">ประเภทงาน <span class="text-red-400">*</span></label>
+                    <div class="grid grid-cols-2 gap-2" id="job-types">
+                        <label class="cb-item flex items-center gap-2.5 cursor-pointer">
+                            <input type="checkbox" value="รีวิวสินค้า" class="w-4 h-4 accent-[#C5A880]">
+                            <span class="text-sm dark:text-gray-300 text-gray-700">รีวิวสินค้า</span>
+                        </label>
+                        <label class="cb-item flex items-center gap-2.5 cursor-pointer">
+                            <input type="checkbox" value="รีวิวร้านอาหาร/สถานที่" class="w-4 h-4 accent-[#C5A880]">
+                            <span class="text-sm dark:text-gray-300 text-gray-700">รีวิวร้านอาหาร/สถานที่</span>
+                        </label>
+                        <label class="cb-item flex items-center gap-2.5 cursor-pointer">
+                            <input type="checkbox" value="ถ่ายรูป/วิดีโอสินค้า" class="w-4 h-4 accent-[#C5A880]">
+                            <span class="text-sm dark:text-gray-300 text-gray-700">ถ่ายรูป/วิดีโอสินค้า</span>
+                        </label>
+                        <label class="cb-item flex items-center gap-2.5 cursor-pointer">
+                            <input type="checkbox" value="Live Streaming" class="w-4 h-4 accent-[#C5A880]">
+                            <span class="text-sm dark:text-gray-300 text-gray-700">Live Streaming</span>
+                        </label>
+                        <label class="cb-item flex items-center gap-2.5 cursor-pointer">
+                            <input type="checkbox" value="สร้าง Content" class="w-4 h-4 accent-[#C5A880]">
+                            <span class="text-sm dark:text-gray-300 text-gray-700">สร้าง Content</span>
+                        </label>
+                        <label class="cb-item flex items-center gap-2.5 cursor-pointer">
+                            <input type="checkbox" value="อื่นๆ" class="w-4 h-4 accent-[#C5A880]">
+                            <span class="text-sm dark:text-gray-300 text-gray-700">อื่นๆ</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- ช่องทาง -->
+                <div class="mb-5">
+                    <label class="block text-xs font-mono tracking-widest text-bronze/80 uppercase mb-3">ช่องทางที่ต้องการ</label>
+                    <div class="grid grid-cols-3 gap-2" id="channels">
+                        <label class="cb-item flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="Instagram" class="w-4 h-4 accent-[#C5A880]">
+                            <span class="text-sm dark:text-gray-300 text-gray-700">Instagram</span>
+                        </label>
+                        <label class="cb-item flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="TikTok" class="w-4 h-4 accent-[#C5A880]">
+                            <span class="text-sm dark:text-gray-300 text-gray-700">TikTok</span>
+                        </label>
+                        <label class="cb-item flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="YouTube" class="w-4 h-4 accent-[#C5A880]">
+                            <span class="text-sm dark:text-gray-300 text-gray-700">YouTube</span>
+                        </label>
+                        <label class="cb-item flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="Facebook" class="w-4 h-4 accent-[#C5A880]">
+                            <span class="text-sm dark:text-gray-300 text-gray-700">Facebook</span>
+                        </label>
+                        <label class="cb-item flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="Shopee Live" class="w-4 h-4 accent-[#C5A880]">
+                            <span class="text-sm dark:text-gray-300 text-gray-700">Shopee Live</span>
+                        </label>
+                        <label class="cb-item flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="Lazada" class="w-4 h-4 accent-[#C5A880]">
+                            <span class="text-sm dark:text-gray-300 text-gray-700">Lazada</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- รายละเอียด -->
+                <div class="mb-5">
+                    <label class="block text-xs font-mono tracking-widest text-bronze/80 uppercase mb-2">รายละเอียดงาน / สินค้า <span class="text-red-400">*</span></label>
+                    <textarea id="f-desc" rows="4" required placeholder="อธิบายสินค้า/บริการ และสิ่งที่ต้องการจากทีมงาน..."
+                        class="w-full bg-transparent border dark:border-white/[.10] border-black/[.12] rounded-sm px-4 py-2.5 text-sm dark:text-gray-200 text-gray-800 placeholder-gray-400 resize-none"></textarea>
+                </div>
+
+                <!-- งบ + กำหนด (2 col) -->
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label class="block text-xs font-mono tracking-widest text-bronze/80 uppercase mb-2">งบประมาณ</label>
+                        <input id="f-budget" type="text" placeholder="เช่น 5,000 บาท"
+                            class="w-full bg-transparent border dark:border-white/[.10] border-black/[.12] rounded-sm px-4 py-2.5 text-sm dark:text-gray-200 text-gray-800 placeholder-gray-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-mono tracking-widest text-bronze/80 uppercase mb-2">ต้องการภายใน</label>
+                        <input id="f-deadline" type="text" placeholder="เช่น ปลายเดือนนี้"
+                            class="w-full bg-transparent border dark:border-white/[.10] border-black/[.12] rounded-sm px-4 py-2.5 text-sm dark:text-gray-200 text-gray-800 placeholder-gray-400">
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" id="submit-btn"
+                    class="btn-bronze w-full py-3 rounded-sm text-sm tracking-widest uppercase font-bold">
+                    <i class="fa-solid fa-paper-plane mr-2"></i>
+                    <span id="btn-text">ส่งรายละเอียดงาน</span>
+                </button>
+
+                <p class="text-center text-xs dark:text-gray-500 text-gray-400 mt-4">
+                    ทีมงานจะติดต่อกลับภายใน 24 ชั่วโมง
+                </p>
+
+            </form>
+
+            <!-- Success state (hidden) -->
+            <div id="success-state" class="hidden text-center py-8">
+                <div class="w-16 h-16 rounded-full border-2 border-bronze/40 flex items-center justify-center mx-auto mb-5">
+                    <i class="fa-solid fa-check text-bronze text-2xl"></i>
+                </div>
+                <h3 class="font-serif text-2xl font-black dark:text-gray-50 text-gray-900 mb-2">ส่งเรียบร้อย!</h3>
+                <p class="text-sm dark:text-gray-400 text-gray-500 mb-6">ทีมงาน P2W ได้รับข้อมูลแล้ว จะติดต่อกลับโดยเร็ว</p>
+                <a href="/" class="btn-bronze inline-block px-8 py-2.5 rounded-sm text-xs tracking-widest uppercase">
+                    กลับหน้าแรก
+                </a>
+            </div>
+        </div>
+
+        <!-- Contact note -->
+        <div class="mt-6 text-center fade-up d2">
+            <p class="text-xs dark:text-gray-500 text-gray-400">
+                ติดต่อด่วน:
+                <a href="tel:0887888364" class="text-bronze hover:text-bronze-light mx-2">088-788-8364</a>
+                <span class="dark:text-gray-600 text-gray-300">|</span>
+                <a href="https://lin.ee/QJax26d" target="_blank" class="text-bronze hover:text-bronze-light mx-2">Line OA</a>
+            </p>
+        </div>
+
+    </main>
+
+    <!-- Toast -->
+    <div id="toast-container" class="fixed top-5 right-5 z-[9999] flex flex-col gap-2"></div>
+
+    <script>
+    // ─── Theme ───
+    const html  = document.documentElement;
+    const sun   = document.getElementById('sun-icon');
+    const moon  = document.getElementById('moon-icon');
+    function applyTheme(t) {
+        if (t === 'light') { html.classList.remove('dark'); sun.classList.remove('hidden'); moon.classList.add('hidden'); }
+        else               { html.classList.add('dark');    moon.classList.remove('hidden'); sun.classList.add('hidden'); }
+    }
+    applyTheme(localStorage.getItem('p2w-review-theme') || 'dark');
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+        const next = html.classList.contains('dark') ? 'light' : 'dark';
+        localStorage.setItem('p2w-review-theme', next);
+        applyTheme(next);
+    });
+
+    // ─── Fade-up ───
+    const obs = new IntersectionObserver(entries =>
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.1 });
+    document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
+    // ─── Toast ───
+    function showToast(msg, ok = true) {
+        const t = document.createElement('div');
+        t.className = `toast glass-card border ${ok ? 'border-bronze/30' : 'border-red-400/40'} rounded-sm px-5 py-3 text-sm flex items-center gap-3 shadow-lg`;
+        t.innerHTML = `<i class="fa-solid ${ok ? 'fa-check text-bronze' : 'fa-xmark text-red-400'}"></i><span>${msg}</span>`;
+        document.getElementById('toast-container').appendChild(t);
+        setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 350); }, 4000);
+    }
+
+    // ─── Apps Script URL ───
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz6ya72gdmELmCECrO28zACTdoVLcchVJXOoluHpjPTKsZnCRmYkRk5B74vvD57jHLB/exec';
+
+    // ─── Form submit ───
+    document.getElementById('job-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const name    = document.getElementById('f-name').value.trim();
+        const phone   = document.getElementById('f-phone').value.trim();
+        const contact = document.getElementById('f-contact').value.trim();
+        const desc    = document.getElementById('f-desc').value.trim();
+
+        if (!name || !phone || !contact || !desc) {
+            showToast('กรุณากรอกข้อมูลที่จำเป็นให้ครบ', false); return;
+        }
+
+        const jobTypes = [...document.querySelectorAll('#job-types input:checked')].map(c => c.value);
+        if (jobTypes.length === 0) { showToast('กรุณาเลือกประเภทงานอย่างน้อย 1 ข้อ', false); return; }
+
+        const channels = [...document.querySelectorAll('#channels input:checked')].map(c => c.value);
+
+        const btn = document.getElementById('submit-btn');
+        document.getElementById('btn-text').textContent = 'กำลังส่ง...';
+        btn.disabled = true;
+
+        const payload = {
+            type:     'job',
+            name, phone, contact,
+            jobTypes: jobTypes.join(', '),
+            channels: channels.join(', '),
+            description: desc,
+            budget:   document.getElementById('f-budget').value.trim(),
+            deadline: document.getElementById('f-deadline').value.trim(),
+        };
+
+        try {
+            await fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            // no-cors means we can't read response — assume success
+            document.getElementById('job-form').classList.add('hidden');
+            document.getElementById('success-state').classList.remove('hidden');
+        } catch (err) {
+            showToast('เกิดข้อผิดพลาด กรุณาลองใหม่หรือติดต่อโดยตรง', false);
+            document.getElementById('btn-text').textContent = 'ส่งรายละเอียดงาน';
+            btn.disabled = false;
+        }
+    });
+    </script>
+</body>
+</html>

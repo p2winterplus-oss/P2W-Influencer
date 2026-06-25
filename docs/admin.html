@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P2W ADMIN</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { bronze: '#C5A880', 'bronze-light': '#E8C99A', 'bronze-dark': '#8B6430' },
+                    fontFamily: { serif: ['"Playfair Display"','Georgia','serif'], sans: ['"Prompt"','sans-serif'] }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Prompt', sans-serif; }
+        .dark body { background-color: #0D0D0C; color: #e4e4e7; }
+        body { background-color: #F9F8F6; color: #27272a; }
+        .grid-pattern { background-image: linear-gradient(to right,rgba(197,168,128,.05) 1px,transparent 1px),linear-gradient(to bottom,rgba(197,168,128,.05) 1px,transparent 1px); background-size:32px 32px; }
+        .light-grid   { background-image: linear-gradient(to right,rgba(0,0,0,.035) 1px,transparent 1px),linear-gradient(to bottom,rgba(0,0,0,.035) 1px,transparent 1px); background-size:32px 32px; }
+        .scanline { background:linear-gradient(to bottom,transparent 50%,rgba(0,0,0,.15) 51%); background-size:100% 4px; }
+        .glass-card { background:rgba(255,255,255,.72); backdrop-filter:blur(14px); }
+        .dark .glass-card { background:rgba(13,13,12,.78); }
+        .text-bronze-gradient { background:linear-gradient(135deg,#BF953F,#FCF6BA,#B38728,#C5A880); -webkit-background-clip:text; background-clip:text; color:transparent; }
+        .btn-bronze { background:#C5A880; color:#0D0D0C; font-weight:700; letter-spacing:.15em; transition:all .3s; }
+        .btn-bronze:hover { box-shadow:0 0 28px rgba(197,168,128,.5); transform:scale(1.02); }
+        .dark .logo-img { filter:drop-shadow(0 0 1px rgba(197,168,128,.9)) drop-shadow(0 0 1px rgba(197,168,128,.6)); }
+        input:focus, select:focus { border-color:#C5A880 !important; outline:none; }
+        .tab-btn { font-family:monospace; font-size:10px; letter-spacing:.15em; padding:7px 20px; border-bottom:2px solid transparent; transition:all .25s; }
+        .tab-btn.active { border-color:#C5A880; color:#C5A880; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .spin { animation:spin 1s linear infinite; display:inline-block; }
+        ::-webkit-scrollbar { width:4px; height:4px; }
+        ::-webkit-scrollbar-thumb { background:rgba(197,168,128,.3); border-radius:2px; }
+        *, *::before, *::after { transition-property:background-color,border-color,color; transition-duration:300ms; }
+        button, a { transition:all .28s ease !important; }
+    </style>
+</head>
+
+<body class="min-h-screen relative">
+
+    <!-- BG -->
+    <div class="fixed inset-0 z-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute inset-0 dark:bg-[#0D0D0C] bg-[#F9F8F6]"></div>
+        <div class="absolute inset-0 dark:grid-pattern light-grid opacity-70"></div>
+        <div class="absolute inset-0 scanline opacity-[0.18]"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,rgba(197,168,128,0.07),transparent)]"></div>
+    </div>
+
+    <!-- ═══════════════════════════════
+         LOGIN STATE
+    ═══════════════════════════════ -->
+    <div id="login-wrap" class="relative z-10">
+
+        <header class="fixed top-0 w-full z-50 dark:bg-[#111110] bg-[#F9F8F6] backdrop-blur-md border-b dark:border-white/[.12] border-black/[.10]">
+            <div class="flex justify-between items-center max-w-[1440px] mx-auto px-5 md:px-10 h-16">
+                <a href="/" class="flex items-center gap-2.5">
+                    <img src="logo.png" alt="P2W" class="logo-img h-11 w-auto" onerror="this.style.display='none'">
+                    <div>
+                        <div class="font-serif text-sm font-black text-bronze leading-tight">P2W INTERPLUS</div>
+                        <div class="font-mono text-[8px] tracking-widest text-bronze/50 uppercase">CONTENTS &amp; INFLUENCER</div>
+                    </div>
+                </a>
+                <div class="flex items-center gap-2">
+                    <button id="theme-toggle-login" class="border dark:border-white/[.08] border-black/[.08] rounded-sm px-3 py-1.5 text-xs font-mono dark:text-gray-400 text-gray-600">
+                        <i id="tl-sun"  class="fa-solid fa-sun  hidden"></i>
+                        <i id="tl-moon" class="fa-solid fa-moon hidden"></i>
+                    </button>
+                    <a href="/" class="border dark:border-white/[.08] border-black/[.08] rounded-sm px-3 py-1.5 text-xs font-mono dark:text-gray-400 text-gray-600">
+                        <i class="fa-solid fa-house mr-1"></i>โฮม
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <div class="min-h-screen pt-16 flex items-center justify-center px-5">
+            <div class="glass-card border dark:border-white/[.08] border-black/[.06] rounded-sm p-8 w-full max-w-sm">
+                <div class="text-center mb-7">
+                    <p class="font-mono text-[9px] tracking-[0.3em] text-bronze/60 uppercase mb-2">ADMIN ACCESS</p>
+                    <h1 class="font-serif text-2xl font-black dark:text-gray-50 text-gray-900">P2W ADMIN</h1>
+                </div>
+                <div class="mb-5">
+                    <label class="block text-xs font-mono tracking-widest text-bronze/70 uppercase mb-2">Admin Key</label>
+                    <input id="key-input" type="password" placeholder="••••••••••••"
+                        class="w-full bg-transparent border dark:border-white/[.10] border-black/[.12] rounded-sm px-4 py-2.5 text-sm dark:text-gray-200 text-gray-800 placeholder-gray-400">
+                    <p id="key-error" class="text-red-400 text-xs mt-1.5 hidden">Key ไม่ถูกต้อง</p>
+                </div>
+                <button onclick="doLogin()" class="btn-bronze w-full py-2.5 rounded-sm text-xs tracking-widest uppercase font-bold">
+                    <span id="login-btn-text">เข้าสู่ระบบ</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════
+         DASHBOARD STATE
+    ═══════════════════════════════ -->
+    <div id="dash-wrap" class="hidden relative z-10">
+
+        <header class="fixed top-0 w-full z-50 dark:bg-[#111110] bg-[#F9F8F6] border-b dark:border-white/[.12] border-black/[.10]">
+            <div class="flex justify-between items-center max-w-[1440px] mx-auto px-5 md:px-10 h-16 gap-3">
+                <div class="flex items-center gap-3 min-w-0">
+                    <img src="logo.png" alt="P2W" class="logo-img h-10 w-auto shrink-0" onerror="this.style.display='none'">
+                    <div>
+                        <div class="font-serif text-sm font-black text-bronze-gradient leading-tight">P2W ADMIN</div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
+                            <span class="font-mono text-[8px] tracking-widest text-emerald-400/80 uppercase">ONLINE</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="theme-toggle-dash" class="border dark:border-white/[.08] border-black/[.08] rounded-sm px-3 py-1.5 text-xs font-mono dark:text-gray-400 text-gray-600">
+                        <i id="td-sun"  class="fa-solid fa-sun  hidden"></i>
+                        <i id="td-moon" class="fa-solid fa-moon hidden"></i>
+                    </button>
+                    <a href="/" class="border dark:border-white/[.08] border-black/[.08] rounded-sm px-3 py-1.5 text-xs font-mono dark:text-gray-400 text-gray-600">
+                        <i class="fa-solid fa-house mr-1"></i>โฮม
+                    </a>
+                    <button onclick="doLogout()" class="border dark:border-white/[.08] border-black/[.08] rounded-sm px-3 py-1.5 text-xs font-mono dark:text-gray-400 text-gray-600">
+                        <i class="fa-solid fa-right-from-bracket mr-1"></i>ออก
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="pt-24 pb-16 px-4 md:px-8 max-w-[1440px] mx-auto">
+
+            <!-- Stat cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                <div class="glass-card border dark:border-white/[.07] border-black/[.06] rounded-sm p-4">
+                    <p class="font-mono text-[9px] tracking-widest text-bronze/60 uppercase mb-1">งานทั้งหมด</p>
+                    <p id="stat-jobs"    class="font-serif text-3xl font-black dark:text-gray-50 text-gray-900">—</p>
+                </div>
+                <div class="glass-card border dark:border-white/[.07] border-black/[.06] rounded-sm p-4">
+                    <p class="font-mono text-[9px] tracking-widest text-bronze/60 uppercase mb-1">รอติดต่อ</p>
+                    <p id="stat-pending" class="font-serif text-3xl font-black text-bronze">—</p>
+                </div>
+                <div class="glass-card border dark:border-white/[.07] border-black/[.06] rounded-sm p-4">
+                    <p class="font-mono text-[9px] tracking-widest text-bronze/60 uppercase mb-1">ผู้เยี่ยมชมรวม</p>
+                    <p id="stat-total-v" class="font-serif text-3xl font-black dark:text-gray-50 text-gray-900">—</p>
+                </div>
+                <div class="glass-card border dark:border-white/[.07] border-black/[.06] rounded-sm p-4">
+                    <p class="font-mono text-[9px] tracking-widest text-bronze/60 uppercase mb-1">คนจริง</p>
+                    <p id="stat-humans"  class="font-serif text-3xl font-black text-emerald-400">—</p>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex border-b dark:border-white/[.08] border-black/[.07] mb-5">
+                <button class="tab-btn active" id="tab-jobs-btn" onclick="switchTab('jobs')">
+                    <i class="fa-solid fa-briefcase mr-1.5"></i>งานที่ฝาก
+                </button>
+                <button class="tab-btn" id="tab-vis-btn" onclick="switchTab('visitors')">
+                    <i class="fa-solid fa-eye mr-1.5"></i>ผู้เยี่ยมชม
+                </button>
+            </div>
+
+            <!-- ── Jobs tab ── -->
+            <div id="tab-jobs">
+                <div class="flex justify-between items-center mb-3">
+                    <p class="font-mono text-[9px] tracking-widest text-bronze/60 uppercase">รายการงาน</p>
+                    <button onclick="loadJobs()" class="text-xs font-mono dark:text-gray-400 text-gray-500 hover:text-bronze">
+                        <i class="fa-solid fa-rotate-right mr-1"></i>รีเฟรช
+                    </button>
+                </div>
+                <div id="jobs-loading" class="text-center py-12 dark:text-gray-500 text-gray-400 text-sm">
+                    <i class="fa-solid fa-circle-notch spin mr-2"></i>กำลังโหลด...
+                </div>
+                <div id="jobs-empty" class="hidden text-center py-12 dark:text-gray-500 text-gray-400 text-sm">
+                    ยังไม่มีงานที่ฝาก
+                </div>
+                <div id="jobs-table-wrap" class="hidden overflow-x-auto rounded-sm border dark:border-white/[.07] border-black/[.06]">
+                    <table class="w-full text-xs min-w-[900px]">
+                        <thead>
+                            <tr class="dark:bg-white/[.03] bg-black/[.03] border-b dark:border-white/[.07] border-black/[.06]">
+                                <th class="text-left font-mono tracking-widest text-bronze/70 px-4 py-2.5 uppercase whitespace-nowrap">วันที่</th>
+                                <th class="text-left font-mono tracking-widest text-bronze/70 px-4 py-2.5 uppercase whitespace-nowrap">ชื่อ/แบรนด์</th>
+                                <th class="text-left font-mono tracking-widest text-bronze/70 px-4 py-2.5 uppercase whitespace-nowrap">ติดต่อ</th>
+                                <th class="text-left font-mono tracking-widest text-bronze/70 px-4 py-2.5 uppercase whitespace-nowrap">ประเภทงาน</th>
+                                <th class="text-left font-mono tracking-widest text-bronze/70 px-4 py-2.5 uppercase whitespace-nowrap">งบ</th>
+                                <th class="text-left font-mono tracking-widest text-bronze/70 px-4 py-2.5 uppercase whitespace-nowrap">กำหนด</th>
+                                <th class="text-left font-mono tracking-widest text-bronze/70 px-4 py-2.5 uppercase whitespace-nowrap">สถานะ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="jobs-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ── Visitors tab ── -->
+            <div id="tab-visitors" class="hidden">
+                <div class="flex justify-between items-center mb-3">
+                    <p class="font-mono text-[9px] tracking-widest text-bronze/60 uppercase">ผู้เยี่ยมชมล่าสุด</p>
+                    <button onclick="loadVisitors()" class="text-xs font-mono dark:text-gray-400 text-gray-500 hover:text-bronze">
+                        <i class="fa-solid fa-rotate-right mr-1"></i>รีเฟรช
+                    </button>
+                </div>
+                <div id="vis-loading" class="text-center py-12 dark:text-gray-500 text-gray-400 text-sm">
+                    <i class="fa-solid fa-circle-notch spin mr-2"></i>กำลังโหลด...
+                </div>
+                <div id="vis-empty" class="hidden text-center py-12 dark:text-gray-500 text-gray-400 text-sm">
+                    ยังไม่มีข้อมูลผู้เยี่ยมชม
+                </div>
+                <div id="vis-table-wrap" class="hidden overflow-x-auto rounded-sm border dark:border-white/[.07] border-black/[.06]">
+                    <table class="w-full text-xs min-w-[800px]">
+                        <thead>
+                            <tr class="dark:bg-white/[.03] bg-black/[.03] border-b dark:border-white/[.07] border-black/[.06]">
+                                <th class="text-left font-mono tracking-widest text-bronze/70 px-4 py-2.5 uppercase">วันที่</th>
+                                <th class="text-left font-mono tracking-widest text-bronze/70 px-4 py-2.5 uppercase">ประเทศ/เมือง</th>
+                                <th class="text-left font-mono tracking-widest text-bronze/70 px-4 py-2.5 uppercase">ISP</th>
+                                <th class="text-left font-mono tracking-widest text-bronze/70 px-4 py-2.5 uppercase">หน้า</th>
+                                <th class="text-left font-mono tracking-widest text-bronze/70 px-4 py-2.5 uppercase">อุปกรณ์</th>
+                                <th class="text-left font-mono tracking-widest text-bronze/70 px-4 py-2.5 uppercase">ประเภท</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vis-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz6ya72gdmELmCECrO28zACTdoVLcchVJXOoluHpjPTKsZnCRmYkRk5B74vvD57jHLB/exec';
+    let adminKey = localStorage.getItem('p2w-admin-key') || '';
+
+    // ─── Theme ───
+    const html = document.documentElement;
+    function applyTheme(t) {
+        const dark = t !== 'light';
+        html.classList.toggle('dark', dark);
+        [['tl-sun','tl-moon'],['td-sun','td-moon']].forEach(([s,m]) => {
+            document.getElementById(s)?.classList.toggle('hidden',  dark);
+            document.getElementById(m)?.classList.toggle('hidden', !dark);
+        });
+    }
+    applyTheme(localStorage.getItem('p2w-review-theme') || 'dark');
+    ['theme-toggle-login','theme-toggle-dash'].forEach(id => {
+        document.getElementById(id)?.addEventListener('click', () => {
+            const next = html.classList.contains('dark') ? 'light' : 'dark';
+            localStorage.setItem('p2w-review-theme', next);
+            applyTheme(next);
+        });
+    });
+
+    // ─── Auto-login ───
+    if (adminKey) doLogin();
+
+    // ─── Login ───
+    async function doLogin() {
+        const inp    = document.getElementById('key-input');
+        const errEl  = document.getElementById('key-error');
+        const btnTxt = document.getElementById('login-btn-text');
+        const key    = (inp?.value.trim()) || adminKey;
+        if (!key) { showErr('กรุณากรอก Key'); return; }
+        if (btnTxt) btnTxt.textContent = 'กำลังตรวจสอบ...';
+        errEl?.classList.add('hidden');
+        try {
+            const res  = await fetch(`${SCRIPT_URL}?action=jobs&key=${encodeURIComponent(key)}`);
+            const data = await res.json();
+            if (data.error === 'unauthorized') { showErr('Key ไม่ถูกต้อง'); if (btnTxt) btnTxt.textContent='เข้าสู่ระบบ'; localStorage.removeItem('p2w-admin-key'); adminKey=''; return; }
+            adminKey = key;
+            localStorage.setItem('p2w-admin-key', key);
+            showDash(data.jobs || []);
+        } catch { showErr('เชื่อมต่อไม่ได้'); if (btnTxt) btnTxt.textContent='เข้าสู่ระบบ'; }
+    }
+    function showErr(msg) { const e=document.getElementById('key-error'); if(e){e.textContent=msg; e.classList.remove('hidden');} }
+    document.getElementById('key-input')?.addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+    // ─── Show / Hide ───
+    function showDash(jobs) {
+        document.getElementById('login-wrap').classList.add('hidden');
+        document.getElementById('dash-wrap').classList.remove('hidden');
+        renderJobs(jobs);
+        loadVisitors();
+    }
+    function doLogout() {
+        localStorage.removeItem('p2w-admin-key'); adminKey = '';
+        document.getElementById('dash-wrap').classList.add('hidden');
+        document.getElementById('login-wrap').classList.remove('hidden');
+        const inp=document.getElementById('key-input'); if(inp) inp.value='';
+        const bt=document.getElementById('login-btn-text'); if(bt) bt.textContent='เข้าสู่ระบบ';
+    }
+
+    // ─── Tabs ───
+    function switchTab(tab) {
+        const isJobs = tab==='jobs';
+        document.getElementById('tab-jobs').classList.toggle('hidden', !isJobs);
+        document.getElementById('tab-visitors').classList.toggle('hidden', isJobs);
+        document.getElementById('tab-jobs-btn').classList.toggle('active', isJobs);
+        document.getElementById('tab-vis-btn').classList.toggle('active', !isJobs);
+        if (!isJobs) loadVisitors();
+    }
+
+    // ─── Jobs ───
+    async function loadJobs() {
+        document.getElementById('jobs-loading').classList.remove('hidden');
+        document.getElementById('jobs-empty').classList.add('hidden');
+        document.getElementById('jobs-table-wrap').classList.add('hidden');
+        try {
+            const res  = await fetch(`${SCRIPT_URL}?action=jobs&key=${encodeURIComponent(adminKey)}`);
+            const data = await res.json();
+            renderJobs(data.jobs || []);
+        } catch { renderJobs([]); }
+    }
+
+    function renderJobs(jobs) {
+        document.getElementById('jobs-loading').classList.add('hidden');
+        document.getElementById('stat-jobs').textContent    = jobs.length;
+        document.getElementById('stat-pending').textContent = jobs.filter(j=>j['สถานะ']==='รอติดต่อ').length;
+        if (!jobs.length) { document.getElementById('jobs-empty').classList.remove('hidden'); return; }
+        document.getElementById('jobs-table-wrap').classList.remove('hidden');
+        const tbody = document.getElementById('jobs-tbody');
+        tbody.innerHTML = jobs.map(j => {
+            const s = j['สถานะ']||'รอติดต่อ';
+            const cls = s==='รอติดต่อ'
+                ? 'dark:bg-[rgba(197,168,128,.12)] bg-[rgba(197,168,128,.15)] text-bronze border border-[rgba(197,168,128,.3)]'
+                : s==='ติดต่อแล้ว'
+                ? 'dark:bg-blue-900/20 bg-blue-50 text-blue-400 border border-blue-400/30'
+                : 'dark:bg-emerald-900/20 bg-emerald-50 text-emerald-500 border border-emerald-500/25';
+            return `<tr class="border-b dark:border-white/[.05] border-black/[.04] dark:hover:bg-white/[.02] hover:bg-black/[.02]">
+                <td class="px-4 py-3 dark:text-gray-400 text-gray-500 whitespace-nowrap text-[11px]">${esc(j['วันที่/เวลา']||'')}</td>
+                <td class="px-4 py-3 dark:text-gray-200 text-gray-800 font-medium">${esc(j['ชื่อ/แบรนด์']||'')}</td>
+                <td class="px-4 py-3 dark:text-gray-400 text-gray-600 text-[11px]">
+                    <div>${esc(j['เบอร์']||'')}</div>
+                    <div class="text-bronze/70">${esc(j['Line/Email']||'')}</div>
+                </td>
+                <td class="px-4 py-3 dark:text-gray-300 text-gray-700 max-w-[200px]">
+                    <div>${esc(j['ประเภทงาน']||'')}</div>
+                    <div class="dark:text-gray-500 text-gray-400 text-[10px] mt-0.5">${esc(j['ช่องทาง']||'')}</div>
+                </td>
+                <td class="px-4 py-3 dark:text-gray-400 text-gray-600 whitespace-nowrap">${esc(j['งบประมาณ']||'—')}</td>
+                <td class="px-4 py-3 dark:text-gray-400 text-gray-600 whitespace-nowrap">${esc(j['กำหนดเวลา']||'—')}</td>
+                <td class="px-4 py-3">
+                    <select onchange="updateStatus(${j._row},this.value)"
+                        class="bg-transparent text-[10px] font-mono rounded-sm cursor-pointer focus:outline-none py-0.5 px-2 ${cls}">
+                        <option value="รอติดต่อ"   ${s==='รอติดต่อ'   ?'selected':''}>รอติดต่อ</option>
+                        <option value="ติดต่อแล้ว" ${s==='ติดต่อแล้ว'?'selected':''}>ติดต่อแล้ว</option>
+                        <option value="ปิดงาน"     ${s==='ปิดงาน'     ?'selected':''}>ปิดงาน</option>
+                    </select>
+                </td>
+            </tr>`;
+        }).join('');
+    }
+
+    async function updateStatus(row, status) {
+        try {
+            await fetch(SCRIPT_URL, {
+                method:'POST', mode:'no-cors',
+                headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({type:'updateStatus', key:adminKey, row, status}),
+            });
+        } catch {}
+        const pending = [...document.querySelectorAll('#jobs-tbody select')].filter(s=>s.value==='รอติดต่อ').length;
+        document.getElementById('stat-pending').textContent = pending;
+    }
+
+    // ─── Visitors ───
+    async function loadVisitors() {
+        document.getElementById('vis-loading').classList.remove('hidden');
+        document.getElementById('vis-empty').classList.add('hidden');
+        document.getElementById('vis-table-wrap').classList.add('hidden');
+        try {
+            const res  = await fetch(`${SCRIPT_URL}?action=visitors&key=${encodeURIComponent(adminKey)}`);
+            const data = await res.json();
+            renderVisitors(data);
+        } catch { renderVisitors({}); }
+    }
+
+    function renderVisitors(data) {
+        document.getElementById('vis-loading').classList.add('hidden');
+        document.getElementById('stat-total-v').textContent = data.total  ?? '—';
+        document.getElementById('stat-humans').textContent  = data.humans ?? '—';
+        const visitors = data.visitors || [];
+        if (!visitors.length) { document.getElementById('vis-empty').classList.remove('hidden'); return; }
+        document.getElementById('vis-table-wrap').classList.remove('hidden');
+        document.getElementById('vis-tbody').innerHTML = visitors.map(v => `
+            <tr class="border-b dark:border-white/[.05] border-black/[.04] dark:hover:bg-white/[.02] hover:bg-black/[.02]">
+                <td class="px-4 py-2.5 dark:text-gray-400 text-gray-500 whitespace-nowrap text-[11px]">${esc(v['วันที่/เวลา']||'')}</td>
+                <td class="px-4 py-2.5 dark:text-gray-300 text-gray-700">${esc(v['ประเทศ']||'')} ${esc(v['เมือง']||'')}</td>
+                <td class="px-4 py-2.5 dark:text-gray-400 text-gray-500 max-w-[160px] truncate">${esc(v['ISP']||'')}</td>
+                <td class="px-4 py-2.5 dark:text-gray-400 text-gray-500 font-mono text-[10px]">${esc(v['หน้า']||'/')}</td>
+                <td class="px-4 py-2.5 dark:text-gray-400 text-gray-500">${esc(v['อุปกรณ์']||'')} ${esc(v['Browser']||'')}</td>
+                <td class="px-4 py-2.5">
+                    <span class="font-mono text-[10px] px-2 py-0.5 rounded-sm ${v['ประเภท']==='บอท'?'dark:bg-red-900/20 bg-red-50 text-red-400':'dark:bg-emerald-900/20 bg-emerald-50 text-emerald-500'}">
+                        ${esc(v['ประเภท']||'')}
+                    </span>
+                </td>
+            </tr>`).join('');
+    }
+
+    function esc(s) {
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    </script>
+</body>
+</html>
